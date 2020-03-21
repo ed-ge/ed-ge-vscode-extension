@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+
+<head>
+  <title></title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+  <div id='app'>
+    <v-app>
+      <v-content>
+        <v-container>
+          <v-row>
+            <v-col>
+              <v-card>
+                <v-card-title>
+                  Hello World
+                </v-card-title>
+              </v-card>
+              <v-card>
+                <v-card-title>
+                  <!--<v-btn @click="doClick()">Add game contents</v-btn>-->
+                  <v-btn @click="getScenes()">Get Scenes</v-btn>
+                </v-card-title>
+              </v-card>
+              <v-card>
+                <div v-for="scene in scenes" :key="scene">
+                  {{scene}}
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-content>
+      {{files}}
+    </v-app>
+
+
+  </div>
+
+  <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+  <script src='https://unpkg.com/vue'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+
+
+  <script>
+
+    var app = new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data: {
+        rows: [],
+        vscode: {},
+        files: [],
+        scenes:[],
+      },
+      mounted() {
+        this.vscode = acquireVsCodeApi();
+        this.files = this.vscode.postMessage({
+          command: 'getFiles',
+          text: 'Get Files'
+        })
+
+      },
+      methods: {
+        doClick() {
+          this.vscode.postMessage({
+            command: 'createFile',
+            text: '🐛  on line '
+          })
+        },
+        getScenes() {
+          this.vscode.postMessage({
+            command: 'getScenes',
+            text: 'getScenes'
+          })
+        }
+      },
+    });
+
+    window.addEventListener('message', event => {
+
+      const message = event.data; // The JSON data our extension sent
+
+      switch (message.command) {
+        case 'allFiles':
+          app.files = message.text;
+          break;
+        case 'allScenes':
+          app.scenes = message.text;
+          break;
+      }
+    });
+
+
+
+
+
+
+  </script>
+
+</body>
+
+</html>
