@@ -16,6 +16,7 @@
 		"vscode": "^1.23.0"
 	},
 	"activationEvents": [
+    "onWebviewPanel:ed-ge",
 		"onCommand:ed-ge.start"
 	],
 	"main": "./out/extension",

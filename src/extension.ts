@@ -94,13 +94,14 @@ class CatCodingPanel {
     // Handle messages from the webview
     this._panel.webview.onDidReceiveMessage(
       (message: any) => {
+        let files;
         switch (message.command) {
           case 'alert':
             vscode.window.showErrorMessage(message.text);
             return;
           case 'getFiles':
             console.log("Getting files");
-            let files = fs.readdirSync(path.join(this._extensionPath, 'media', 'gameBase', 'game'));
+            files = fs.readdirSync(path.join(this._extensionPath, 'media', 'gameBase', 'game'));
 
             this._panel.webview.postMessage(
               {
@@ -108,6 +109,21 @@ class CatCodingPanel {
                 text: files,
               }
             );
+            return;
+          case 'selectScene':
+            console.log("Getting a scene " + message.text)
+            if (vscode.workspace.workspaceFolders) {
+              console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
+
+              let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'game', 'scenes', message.text), "ascii");
+              
+              this._panel.webview.postMessage(
+                {
+                  command: 'sceneContents',
+                  text: temp,
+                }
+              );
+            }
             return;
           case 'getScenes':
             console.log("Getting scenes");
@@ -117,7 +133,7 @@ class CatCodingPanel {
 
               this._panel.webview.postMessage(
                 {
-                  command: 'allFiles',
+                  command: 'allScenes',
                   text: files,
                 }
               );
