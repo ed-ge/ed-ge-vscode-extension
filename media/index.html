@@ -109,6 +109,7 @@
       </div>
       <div class="flex_body">
         This is the body
+        <canvas id="canv" width="300"></canvas>
       </div>
     </div>
   </div>
@@ -138,7 +139,8 @@
         scenes: [],
         drawer: true,
         on: true,
-        source: "https://github.com/ed-ge"
+        source: "https://github.com/ed-ge",
+        canv:{},
       },
       mounted() {
         this.vscode = acquireVsCodeApi();
@@ -146,9 +148,24 @@
           command: 'getScenes',
           text: 'getScenes_+|'
         })
+        
 
       },
+      watch:{
+        scene(newValue, oldValue){
+          if(newValue != oldValue){
+            this.draw();
+          }
+        }
+      },
       methods: {
+        draw(){
+          let ctx = canv.getContext('2d');
+
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, canv.width, canv.height);
+          this.scene.default.objects.filter(i => i.draw).forEach(i => i.draw(ctx));
+        },
         doClick() {
           this.vscode.postMessage({
             command: 'createFile',
@@ -199,6 +216,7 @@
             .then(result => {
               console.log(JSON.stringify(result, null, 2));
               app.scene = result;
+              
 
             })
             .catch(err => {
@@ -209,6 +227,8 @@
           break;
       }
     });
+
+    app.canv = document.elementById("canv")
 
 
 
