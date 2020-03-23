@@ -67,14 +67,43 @@
                   {{scene.default.name}}
                 </div>
                 <div v-for="object in scene.default.objects">
-                  <a href='#' @click="selectObject(object)">{{object.name}}<a>
+                  <a href='#' @click="selectObject(object)">{{object.name}}</a>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="flex_drawer_row">
-            Components
+            <div>
+              Components
+            </div>
+            <div v-if="gameObject==null">
+              Select a GameObject to see its components
+            </div>
+            <div v-else>
+              <div>{{gameObject.name}}</div>
+              <div>{{gameObject.type}}</div>
+              <div>{{gameObject.location}}</div>
+              <div>{{gameObject.scale}}</div>
+              <div>{{gameObject.rotation}}</div>
+              <div v-for="(component,index) in gameObject.components" :key="index">
+                <div>{{component.type}}</div>
+                <div v-for="(value,index) in component.values" :key="index">
+                  <div>Key: {{value.key}}</div>
+                  <div>Value: {{value.value}}</div>
+                </div>
+              </div>
+              <div>
+                <div v-for="(componentValue,index) in gameObject.componentValues" :key="index">
+                  <div>{{componentValue.type}}</div>
+                  <div v-for="(value,index) in componentValue.values" :key="index">
+                    <div>Key: {{value.key}}</div>
+                    <div>Value: {{value.value}}</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
@@ -85,7 +114,7 @@
   </div>
 
 
-  
+
 
 
 
@@ -138,6 +167,9 @@
         },
         addScene() {
 
+        },
+        selectObject(object) {
+          this.gameObject = object;
         }
       },
       created() {
