@@ -62,7 +62,11 @@ function gameLoop() {
 function draw(ctx) {
   canv = document.querySelector("#canv");
   ctx = canv.getContext('2d');
-  
+  let parent = document.querySelector("#canvas_parent");
+  canv.width = parent.offsetWidth;
+  canv.height = parent.offsetHeight;
+  canv.style.width = parent.offsetWidth + "px";
+  canv.style.height = parent.offsetHeight + "px"
   try {
     SceneManager.currentScene.draw(ctx, canv.width, canv.height);
   }catch(err){
