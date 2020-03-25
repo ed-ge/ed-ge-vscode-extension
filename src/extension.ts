@@ -49,7 +49,7 @@ class CatCodingPanel {
       CatCodingPanel.currentPanel._panel.reveal(column);
       return;
     }
-
+    console.log(path.join(extensionPath, 'media'))
     // Otherwise, create a new panel.
     const panel = vscode.window.createWebviewPanel(
       CatCodingPanel.viewType,
@@ -59,6 +59,7 @@ class CatCodingPanel {
         // Enable javascript in the webview
         enableScripts: true,
         retainContextWhenHidden: true,
+        
       }
     );
 
@@ -116,7 +117,7 @@ class CatCodingPanel {
               console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
 
               let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'game', 'scenes', message.text), "ascii");
-              
+
               this._panel.webview.postMessage(
                 {
                   command: 'sceneContents',
@@ -185,7 +186,7 @@ class CatCodingPanel {
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Local path to main script run in the webview
     const scriptPathOnDisk = vscode.Uri.file(
-      path.join(this._extensionPath, 'media', 'main.js')
+      path.join(this._extensionPath, 'media', 'preview.js')
     );
 
     const scriptPathOnDiskHTML = vscode.Uri.file(
@@ -193,8 +194,8 @@ class CatCodingPanel {
     );
 
     // And the uri we use to load this script in the webview
-    const content = fs.readFileSync(path.join(this._extensionPath, 'media', 'index.html'), 'utf-8');
-
+    let content = fs.readFileSync(path.join(this._extensionPath, 'media', 'index.html'), 'utf-8');
+    content = content.replace("${webview.cspSource}", `${this._extensionPath}`);
     return content;
   }
 }
