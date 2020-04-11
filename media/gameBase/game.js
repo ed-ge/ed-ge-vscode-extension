@@ -27,7 +27,7 @@ document.body.addEventListener('mouseup', mouseup);
 
 let Input = Engine.Base.Input;
 
-function keydown(event) {
+function keydown(event)  {
   if (Input.keys[event.key] != true)
     Input.down[event.key] = true;
   Input.keys[event.key] = true;

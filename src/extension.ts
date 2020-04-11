@@ -116,7 +116,7 @@ class CatCodingPanel {
             if (vscode.workspace.workspaceFolders) {
               console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
 
-              let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'game', 'scenes', message.text), "ascii");
+              let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath,  'game.js'), "ascii");
 
               this._panel.webview.postMessage(
                 {
@@ -126,16 +126,16 @@ class CatCodingPanel {
               );
             }
             return;
-          case 'getScenes':
+          case 'getScenes': 
             console.log("Getting scenes");
             if (vscode.workspace.workspaceFolders) {
               console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
-              files = fs.readdirSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'game', 'scenes'));
+              let file = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'game.js'), 'ascii');
 
               this._panel.webview.postMessage(
                 {
                   command: 'allScenes',
-                  text: files,
+                  text: file,
                 }
               );
             }

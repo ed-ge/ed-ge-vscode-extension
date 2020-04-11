@@ -9,7 +9,7 @@
   <!-- <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"> -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  
+
   <style>
     html,
     body {
@@ -17,19 +17,19 @@
       padding: 0;
       width: 100%;
       height: 100%;
-      
+
     }
 
     .flex_container {
       display: flex;
       flex-direction: row;
-      height:100vh;
-      
+      height: 100vh;
+
     }
 
     .flex_drawer {
       flex: 0 0 30vw;
-      
+
     }
 
     .flex_drawer_row {
@@ -38,7 +38,7 @@
 
     .flex_body {
       flex: 0 0 70vw;
-      background-color:green
+      background-color: green
     }
   </style>
 
@@ -53,11 +53,16 @@
             <div>
               Scenes
             </div>
-            <div v-for="scene in scenes" :key="scene">
-              <a href="#" @click="selectScene(scene)">{{scene}}</a>
+            <div>
+              <button @click="get()">Get</button>
+            </div>
+            <div v-if="setup">
+              <div v-for="scene in scenes" :key="scene.name">
+                <button @click="selectScene(scene)">{{scene.name}}</button>
+              </div>
             </div>
             <div>
-              <a href="#" @click="addScene()">[Add Scene...]</a>
+              <a href="#" @click="addNewScene()">[Add Scene...]</a>
             </div>
           </div>
           <div class="flex_drawer_row">
@@ -68,10 +73,10 @@
               </div>
               <div v-else>
                 <div>
-                  {{scene.default.name}}
+                  {{scene.name}}
                 </div>
-                <div v-for="object in scene.default.objects">
-                  <a href='#' @click="selectObject(object)">{{object.name}}</a>
+                <div v-for="object in scene.children">
+                  <button @click="selectObject(object)">{{object.name}}</button>
                 </div>
               </div>
             </div>
@@ -91,10 +96,11 @@
               <div>{{gameObject.scale}}</div>
               <div>{{gameObject.rotation}}</div>
               <div v-for="(component,index) in gameObject.components" :key="index">
-                <div>{{component.type}}</div>
-                <div v-for="(value,index) in component.values" :key="index">
-                  <div>Key: {{value.key}}</div>
-                  <div>Value: {{value.value}}</div>
+                <div>{{component.constructor.name}}</div>
+                <div v-for="(value,index) in Object.keys(component)" :key="index">
+                  <div v-if="value!='gameObject'">
+                    <div> {{value}}: {{component[value]}}</div>
+                  </div>
                 </div>
               </div>
               <div>
@@ -112,26 +118,22 @@
         </div>
       </div>
       <div class="flex_body" id="canvas_parent">
-        
+
         <canvas id="canv" width="70vw" height="100vh"></canvas>
       </div>
     </div>
   </div>
 
-
-
-
-
-
   <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
   <script src='https://unpkg.com/vue'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@7ae12bd5aa3b9a936ec64b4aba22a6cb4e2bd107/free/Base.js"></script>
 
-  
-  <script src="http://127.0.0.1:5501/media/preview.js" type="module"></script>
+
+  <!-- <script src="./preview.js" type="module"></script> -->
   <script type="module">
-    
+
 
     var app = new Vue({
       el: '#app',
@@ -146,61 +148,77 @@
         drawer: true,
         on: true,
         source: "https://github.com/ed-ge",
-        canv:{},
+        canv: {},
+        setup: false,
+        //Base:Base,
       },
       mounted() {
-        this.vscode = acquireVsCodeApi();
-        this.files = this.vscode.postMessage({
-          command: 'getScenes',
-          text: 'getScenes'
-        })
-        
+
 
       },
-      watch:{
-        scene(newValue, oldValue){
-          if(newValue != oldValue){
-            this.draw();
-          }
+      watch: {
+        scene(newValue, oldValue) {
+          // if (newValue != oldValue) {
+          //   this.draw();
+          // }
         }
       },
       methods: {
-        draw(){
-          let ctx = canv.getContext('2d');
-
-          ctx.fillStyle = "white";
-          ctx.fillRect(0, 0, canv.width, canv.height);
-          this.scene.default.objects.filter(i => i.draw).forEach(i => i.draw(ctx));
-        },
-        doClick() {
-          this.vscode.postMessage({
-            command: 'createFile',
-            text: '🐛  on line '
-          })
-        },
-        getScenes() {
-          this.vscode.postMessage({
+        get() {
+          console.log("Getting");
+          this.vscode = acquireVsCodeApi();
+          this.files = this.vscode.postMessage({
             command: 'getScenes',
             text: 'getScenes'
           })
         },
-        selectScene(name) {
-          console.log("Selecting scene " + name)
-          this.vscode.postMessage({ command: 'selectScene', text: name })
+        draw() {
+          // let ctx = canv.getContext('2d');
+
+          // ctx.fillStyle = "white";
+          // ctx.fillRect(0, 0, canv.width, canv.height);
+          // this.scene.objects.filter(i => i.draw).forEach(i => i.draw(ctx));
         },
-        
+        doClick() {
+          // this.vscode.postMessage({
+          //   command: 'createFile',
+          //   text: '🐛  on line '
+          // })
+        },
+        getScenes() {
+          // this.vscode.postMessage({
+          //   command: 'getScenes',
+          //   text: 'getScenes'
+          // })
+        },
+        selectScene(scene) {
+          console.log("Selecting scene " + name)
+          //this.vscode.postMessage({ command: 'selectScene', text: name })
+          this.scene = scene;
+        },
+
         selectObject(object) {
           this.gameObject = object;
+        },
+        addScene(obj) {
+          console.log(obj.GameObjects)
+          console.log(obj.GameBehaviors)
+          console.log(obj.Scenes)
+          //this.scenes = obj.Scenes.allScenes;
+          //Base.main(obj.GameObjects, obj.GameBehaviors, obj.Scenes, false);
+
+
         }
       },
       created() {
         this.$vuetify.theme.dark = true
       },
+
     });
 
-    
 
-    
+
+
 
     window.addEventListener('message', event => {
 
@@ -213,28 +231,46 @@
         case 'allScenes':
           console.log("Got scenes");
           console.log(message.text);
-          app.scenes = message.text;
-          break;
-        case 'sceneContents':
-          console.log("Got scene contents");
-          console.log(JSON.stringify(message.text, null, 2));
           var moduleData = message.text;
           var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
           import(b64moduleData)
-            .then(result => {
-              //console.log(JSON.stringify(result, null, 2));
-              app.scene = result;
-              addScene(result.default)
-              
+            .then(module => {
+              console.log("Got module")
+              console.log(module.Scenes)
+              app.scenes = module.Scenes.allScenes;
+              Base.main(module.GameObjects, module.GameBehaviors, module.Scenes, false);
+              app.scenes = Base.SceneManager.scenes;
+              console.log(app.scenes);
+              app.setup = true;
 
             })
             .catch(err => {
               console.log("Error " + err);
             })
 
+          //app.scenes = message.text;
+          break;
+        case 'sceneContents':
+          console.log("Got scene contents");
+          // console.log(JSON.stringify(message.text, null, 2));
+          // var moduleData = message.text;
+          // var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
+          // import(b64moduleData)
+          //   .then(result => {
+          //     console.log(JSON.stringify(result, null, 2));
+          //     //app.scene = result;
+          //     //app.addScene(result)
+
+
+          //   })
+          //   .catch(err => {
+          //     console.log("Error " + err);
+          //   })
+
 
           break;
       }
+
     });
 
     app.canv = document.getElementById("canv")
