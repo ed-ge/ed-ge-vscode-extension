@@ -116,7 +116,7 @@ class CatCodingPanel {
             if (vscode.workspace.workspaceFolders) {
               console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
 
-              let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'game.js'), "ascii");
+              let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'), "ascii");
 
               this._panel.webview.postMessage(
                 {
@@ -130,7 +130,7 @@ class CatCodingPanel {
             console.log("Getting scenes");
             if (vscode.workspace.workspaceFolders) {
               console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
-              let file = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'game.js'), 'ascii');
+              let file = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'), 'ascii');
 
               this._panel.webview.postMessage(
                 {
@@ -143,6 +143,7 @@ class CatCodingPanel {
           case 'createFile':
             if (vscode.workspace.workspaceFolders) {
               let basePath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js');
+              let behaviorPath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'GameBehaviors.js');
 
               let info = JSON.parse(message.text);
               let gameObjects = info.gameObjects;
@@ -151,13 +152,15 @@ class CatCodingPanel {
 
               let file = "";
 
+              file += "import GameBehaviors from './GameBehaviors.js';\n"
+
               file += "let GameObjects = ";
               file += JSON.stringify(gameObjects, null, 2);
               file += '\n';
 
-              file += "let GameBehaviors = ";
-              file += JSON.stringify(gameBehaviors, null, 2);
-              file += '\n';
+              // file += "let GameBehaviors = ";
+              // file += JSON.stringify(gameBehaviors, null, 2);
+              // file += '\n';
 
               file += "let Scenes = ";
               file += JSON.stringify(scenes, null, 2);
@@ -167,6 +170,7 @@ class CatCodingPanel {
               file += `export {GameObjects, GameBehaviors, Scenes}`;
 
               fs.writeFileSync(basePath, file);
+              fs.writeFileSync(behaviorPath, gameBehaviors);
             }
         }
       },

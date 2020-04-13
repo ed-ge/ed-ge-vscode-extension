@@ -16,6 +16,7 @@ var app = new Vue({
     canv: {},
     setup: false,
     startScene: "",
+    behaviors:{},
     //Base:Base,
   },
   mounted() {
@@ -39,10 +40,19 @@ var app = new Vue({
       })
     },
     serializeGameObjects() {
-      return "Game Objects";
+      return {};
     },
     serializeBehaviors() {
-      return "Game Behaviors";
+      let toReturn = "";
+      let toImport = "";
+      let toPackage = "const GameBehaviors={\n";
+      for(let key of Object.keys(this.behaviors)){
+        toImport += `import ${key} from './${key}.js'\n`
+        toPackage += `\t${key},\n`
+      }
+      toReturn = toImport + "\n" + toPackage + "\n};\nexport default GameBehaviors;\n"
+      console.log(toReturn);
+      return toReturn;
     },
     serializeScenes() {
       let toReturn = {};
@@ -63,10 +73,24 @@ var app = new Vue({
           def.location = object.location;
           def.scale = { x: object.scaleX, y: object.scaleY };
           def.rotation = object.rotation;
-          def.type = object.constructor.name;
+          def.type = "EmptyGameObject";
           sceneDef.objects.push(def);
+          def.components = [];
+          for (let component of object.components) {
+            let cdef = ""
+            cdef += component.constructor.name;
+            cdef += "|";
+            for (let key in component) {
+              if (key == "gameObject") continue;
+              cdef += key;
+              cdef += "|";
+              cdef += component[key];
+              cdef += "|";
+            }
+            def.components.push(cdef);
+          }
         }
-        console.log(JSON.stringify(sceneDef, null, 2));
+        //console.log(JSON.stringify(sceneDef, null, 2));
         toReturn.allScenes.push(sceneDef)
       }
 
@@ -75,37 +99,18 @@ var app = new Vue({
     save() {
       let gameObjects = this.serializeGameObjects();
       let gameBehaviors = this.serializeBehaviors();
+      console.log(gameBehaviors);
       let scenes = this.serializeScenes();
       this.vscode.postMessage({
         command: 'createFile',
         text: JSON.stringify({ gameObjects, gameBehaviors, scenes })
       })
     },
-    draw() {
-      // let ctx = canv.getContext('2d');
-
-      // ctx.fillStyle = "white";
-      // ctx.fillRect(0, 0, canv.width, canv.height);
-      // this.scene.objects.filter(i => i.draw).forEach(i => i.draw(ctx));
-    },
-    doClick() {
-      // this.vscode.postMessage({
-      //   command: 'createFile',
-      //   text: '🐛  on line '
-      // })
-    },
-    getScenes() {
-      // this.vscode.postMessage({
-      //   command: 'getScenes',
-      //   text: 'getScenes'
-      // })
-    },
     selectScene(scene) {
       console.log("Selecting scene " + name)
       //this.vscode.postMessage({ command: 'selectScene', text: name })
       this.scene = scene;
     },
-
     selectObject(object) {
       this.gameObject = object;
     },
@@ -149,7 +154,8 @@ window.addEventListener('message', event => {
           app.scenes = module.Scenes.allScenes;
           Base.main(module.GameObjects, module.GameBehaviors, module.Scenes, false);
           app.scenes = Base.SceneManager.scenes;
-          app.startScene = "hello";
+          app.behaviors = module.GameBehaviors;
+          app.startScene = module.Scenes.startScene;
           console.log(app.scenes);
           app.setup = true;
 
