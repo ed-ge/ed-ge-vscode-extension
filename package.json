@@ -1,22 +1,27 @@
 {
-  "name": "ed-ge",
-  "display-name": "ed-ge game engine",
+	"name": "ed-ge",
+	"display-name": "ed-ge game engine",
 	"description": "Educational game engine to prepare students for commercial game engines.",
 	"version": "1.0.0",
-  "publisher": "ed-ge",
-  "categories":["Other"],
-  "keywords":["game engine", "educational"],
-  "license": "MIT",
-  "icon":"icon.png",
-  "galleryBanner": {
-    "color": "#FFFFFF",
-    "theme": "dark"
-  },
+	"publisher": "ed-ge",
+	"categories": [
+		"Other"
+	],
+	"keywords": [
+		"game engine",
+		"educational"
+	],
+	"license": "MIT",
+	"icon": "icon.png",
+	"galleryBanner": {
+		"color": "#FFFFFF",
+		"theme": "dark"
+	},
 	"engines": {
 		"vscode": "^1.23.0"
 	},
 	"activationEvents": [
-    "onWebviewPanel:ed-ge",
+		"onWebviewPanel:ed-ge",
 		"onCommand:ed-ge.start"
 	],
 	"main": "./out/extension",

@@ -97,35 +97,35 @@ class CatCodingPanel {
       (message: any) => {
         let files;
         switch (message.command) {
-          case 'alert':
-            vscode.window.showErrorMessage(message.text);
-            return;
-          case 'getFiles':
-            console.log("Getting files");
-            files = fs.readdirSync(path.join(this._extensionPath, 'media', 'gameBase', 'game'));
+          // case 'alert':
+          //   vscode.window.showErrorMessage(message.text);
+          //   return;
+          // case 'getFiles':
+          //   console.log("Getting files");
+          //   files = fs.readdirSync(path.join(this._extensionPath, 'media', 'gameBase', 'game'));
 
-            this._panel.webview.postMessage(
-              {
-                command: 'allFiles',
-                text: files,
-              }
-            );
-            return;
-          case 'selectScene':
-            console.log("Getting a scene " + message.text)
-            if (vscode.workspace.workspaceFolders) {
-              console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
+          //   this._panel.webview.postMessage(
+          //     {
+          //       command: 'allFiles',
+          //       text: files,
+          //     }
+          //   );
+          //   return;
+          // case 'selectScene':
+          //   console.log("Getting a scene " + message.text)
+          //   if (vscode.workspace.workspaceFolders) {
+          //     console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
 
-              let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'), "ascii");
+          //     let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'), "ascii");
 
-              this._panel.webview.postMessage(
-                {
-                  command: 'sceneContents',
-                  text: temp,
-                }
-              );
-            }
-            return;
+          //     this._panel.webview.postMessage(
+          //       {
+          //         command: 'sceneContents',
+          //         text: temp,
+          //       }
+          //     );
+          //   }
+          //   return;
           case 'getScenes':
             console.log("Getting scenes");
             if (vscode.workspace.workspaceFolders) {
@@ -144,6 +144,7 @@ class CatCodingPanel {
             if (vscode.workspace.workspaceFolders) {
               let basePath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js');
               let behaviorPath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'GameBehaviors.js');
+              //let behaviors = import(behaviorPath);
 
               let info = JSON.parse(message.text);
               let gameObjects = info.gameObjects;
@@ -152,8 +153,8 @@ class CatCodingPanel {
 
               let file = "";
 
-              file += "import GameBehaviors from './GameBehaviors.js';\n"
-
+              file += `import GameBehaviors from '${behaviorPath}';\n`
+              
               file += "let GameObjects = ";
               file += JSON.stringify(gameObjects, null, 2);
               file += '\n';

@@ -144,12 +144,13 @@ window.addEventListener('message', event => {
       break;
     case 'allScenes':
       console.log("Got scenes");
-      console.log(message.text);
+      //console.log(message.text);
       var moduleData = message.text;
       var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
       import(b64moduleData)
         .then(module => {
           console.log("Got module")
+          
           console.log(module.Scenes)
           app.scenes = module.Scenes.allScenes;
           Base.main(module.GameObjects, module.GameBehaviors, module.Scenes, false);
