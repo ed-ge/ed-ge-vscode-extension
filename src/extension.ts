@@ -59,7 +59,7 @@ class CatCodingPanel {
         // Enable javascript in the webview
         enableScripts: true,
         retainContextWhenHidden: true,
-        
+
       }
     );
 
@@ -116,7 +116,7 @@ class CatCodingPanel {
             if (vscode.workspace.workspaceFolders) {
               console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
 
-              let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath,  'game.js'), "ascii");
+              let temp = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'game.js'), "ascii");
 
               this._panel.webview.postMessage(
                 {
@@ -126,7 +126,7 @@ class CatCodingPanel {
               );
             }
             return;
-          case 'getScenes': 
+          case 'getScenes':
             console.log("Getting scenes");
             if (vscode.workspace.workspaceFolders) {
               console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
@@ -142,14 +142,31 @@ class CatCodingPanel {
             return;
           case 'createFile':
             if (vscode.workspace.workspaceFolders) {
-              let basePath = vscode.workspace.workspaceFolders[0].uri.fsPath
+              let basePath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js');
 
-              let extensionDir = path.join(this._extensionPath, 'media', 'gameBase');
+              let info = JSON.parse(message.text);
+              let gameObjects = info.gameObjects;
+              let gameBehaviors = info.gameBehaviors;
+              let scenes = info.scenes;
 
-              ncp(extensionDir, basePath, (err: any) => {
-                if (err) console.error(err);
-                console.log("Done with copy)")
-              })
+              let file = "";
+
+              file += "let GameObjects = ";
+              file += JSON.stringify(gameObjects, null, 2);
+              file += '\n';
+
+              file += "let GameBehaviors = ";
+              file += JSON.stringify(gameBehaviors, null, 2);
+              file += '\n';
+
+              file += "let Scenes = ";
+              file += JSON.stringify(scenes, null, 2);
+              file += '\n';
+
+              file += '\n';
+              file += `export {GameObjects, GameBehaviors, Scenes}`;
+
+              fs.writeFileSync(basePath, file);
             }
         }
       },
@@ -188,6 +205,7 @@ class CatCodingPanel {
     const scriptPathOnDisk = vscode.Uri.file(
       path.join(this._extensionPath, 'media', 'preview.js')
     );
+    console.log(webview.asWebviewUri(scriptPathOnDisk));
 
     const scriptPathOnDiskHTML = vscode.Uri.file(
       path.join(this._extensionPath, 'media', 'index.html')
@@ -195,7 +213,7 @@ class CatCodingPanel {
 
     // And the uri we use to load this script in the webview
     let content = fs.readFileSync(path.join(this._extensionPath, 'media', 'index.html'), 'utf-8');
-    content = content.replace("${webview.cspSource}", `${this._extensionPath}`);
+    content = content.replace("${webview.cspSource}", `${webview.asWebviewUri(scriptPathOnDisk)}`);
     return content;
   }
 }

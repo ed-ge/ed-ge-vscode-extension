@@ -9,7 +9,7 @@
   <!-- <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"> -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-
+  
   <style>
     html,
     body {
@@ -56,6 +56,9 @@
             <div>
               <button @click="get()">Get</button>
             </div>
+            <div>
+              <button @click="save()">Save</button>
+            </div>
             <div v-if="setup">
               <div v-for="scene in scenes" :key="scene.name">
                 <button @click="selectScene(scene)">{{scene.name}}</button>
@@ -90,16 +93,22 @@
               Select a GameObject to see its components
             </div>
             <div v-else>
-              <div>{{gameObject.name}}</div>
-              <div>{{gameObject.type}}</div>
-              <div>{{gameObject.location}}</div>
-              <div>{{gameObject.scale}}</div>
-              <div>{{gameObject.rotation}}</div>
+
+              <div><span width="50%">Name:</span><span width="50%"> <input type="text" v-model='gameObject.name'></span>
+              </div>
+              <div>{{gameObject.constructor.name}}</div>
+              <div>X: <input type="text" v-model='gameObject.x'></div>
+              <div>Y: <input type="text" v-model='gameObject.y'></div>
+              <div>Scale X: <input type="text" v-model='gameObject.scaleX'></div>
+              <div>Scale Y: <input type="text" v-model='gameObject.scaleY'></div>
+              <div>Rotation: <input type="text" v-model='gameObject.rotation'></div>
               <div v-for="(component,index) in gameObject.components" :key="index">
                 <div>{{component.constructor.name}}</div>
                 <div v-for="(value,index) in Object.keys(component)" :key="index">
                   <div v-if="value!='gameObject'">
-                    <div> {{value}}: {{component[value]}}</div>
+                    <div>
+                      <span>{{value}}:</span><span> <input type="text" v-model="component[value]"></span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -131,156 +140,8 @@
   <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@7ae12bd5aa3b9a936ec64b4aba22a6cb4e2bd107/free/Base.js"></script>
 
 
-  <!-- <script src="./preview.js" type="module"></script> -->
-  <script type="module">
-
-
-    var app = new Vue({
-      el: '#app',
-      vuetify: new Vuetify(),
-      data: {
-        scene: null,
-        gameObject: null,
-        rows: [],
-        vscode: {},
-        files: [],
-        scenes: [],
-        drawer: true,
-        on: true,
-        source: "https://github.com/ed-ge",
-        canv: {},
-        setup: false,
-        //Base:Base,
-      },
-      mounted() {
-
-
-      },
-      watch: {
-        scene(newValue, oldValue) {
-          // if (newValue != oldValue) {
-          //   this.draw();
-          // }
-        }
-      },
-      methods: {
-        get() {
-          console.log("Getting");
-          this.vscode = acquireVsCodeApi();
-          this.files = this.vscode.postMessage({
-            command: 'getScenes',
-            text: 'getScenes'
-          })
-        },
-        draw() {
-          // let ctx = canv.getContext('2d');
-
-          // ctx.fillStyle = "white";
-          // ctx.fillRect(0, 0, canv.width, canv.height);
-          // this.scene.objects.filter(i => i.draw).forEach(i => i.draw(ctx));
-        },
-        doClick() {
-          // this.vscode.postMessage({
-          //   command: 'createFile',
-          //   text: '🐛  on line '
-          // })
-        },
-        getScenes() {
-          // this.vscode.postMessage({
-          //   command: 'getScenes',
-          //   text: 'getScenes'
-          // })
-        },
-        selectScene(scene) {
-          console.log("Selecting scene " + name)
-          //this.vscode.postMessage({ command: 'selectScene', text: name })
-          this.scene = scene;
-        },
-
-        selectObject(object) {
-          this.gameObject = object;
-        },
-        addScene(obj) {
-          console.log(obj.GameObjects)
-          console.log(obj.GameBehaviors)
-          console.log(obj.Scenes)
-          //this.scenes = obj.Scenes.allScenes;
-          //Base.main(obj.GameObjects, obj.GameBehaviors, obj.Scenes, false);
-
-
-        }
-      },
-      created() {
-        this.$vuetify.theme.dark = true
-      },
-
-    });
-
-
-
-
-
-    window.addEventListener('message', event => {
-
-      const message = event.data; // The JSON data our extension sent
-
-      switch (message.command) {
-        case 'allFiles':
-          app.files = message.text;
-          break;
-        case 'allScenes':
-          console.log("Got scenes");
-          console.log(message.text);
-          var moduleData = message.text;
-          var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
-          import(b64moduleData)
-            .then(module => {
-              console.log("Got module")
-              console.log(module.Scenes)
-              app.scenes = module.Scenes.allScenes;
-              Base.main(module.GameObjects, module.GameBehaviors, module.Scenes, false);
-              app.scenes = Base.SceneManager.scenes;
-              console.log(app.scenes);
-              app.setup = true;
-
-            })
-            .catch(err => {
-              console.log("Error " + err);
-            })
-
-          //app.scenes = message.text;
-          break;
-        case 'sceneContents':
-          console.log("Got scene contents");
-          // console.log(JSON.stringify(message.text, null, 2));
-          // var moduleData = message.text;
-          // var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
-          // import(b64moduleData)
-          //   .then(result => {
-          //     console.log(JSON.stringify(result, null, 2));
-          //     //app.scene = result;
-          //     //app.addScene(result)
-
-
-          //   })
-          //   .catch(err => {
-          //     console.log("Error " + err);
-          //   })
-
-
-          break;
-      }
-
-    });
-
-    app.canv = document.getElementById("canv")
-
-
-
-
-
-
-  </script>
+  <script src="${webview.cspSource}" type="module"></script>
+ 
 
 </body>
 
