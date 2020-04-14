@@ -23,13 +23,6 @@ var app = new Vue({
     this.get();
 
   },
-  watch: {
-    scene(newValue, oldValue) {
-      // if (newValue != oldValue) {
-      //   this.draw();
-      // }
-    }
-  },
   methods: {
     get() {
       console.log("Getting");
@@ -118,10 +111,7 @@ var app = new Vue({
       console.log(obj.GameObjects)
       console.log(obj.GameBehaviors)
       console.log(obj.Scenes)
-      //this.scenes = obj.Scenes.allScenes;
-      //Base.main(obj.GameObjects, obj.GameBehaviors, obj.Scenes, false);
-
-
+  
     }
   },
   created() {
@@ -144,6 +134,9 @@ window.addEventListener('message', event => {
       break;
     case 'allScenes':
       console.log("Got scenes");
+      import("./save.js")
+        .then(module=>console.log(module))
+        .catch(error=>console.error(error));
       //console.log(message.text);
       var moduleData = message.text;
       var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);

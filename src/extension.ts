@@ -131,6 +131,18 @@ class CatCodingPanel {
             if (vscode.workspace.workspaceFolders) {
               console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
               let file = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'), 'ascii');
+              //let GameBehaviorFileContents = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'GameBehaviors.js'), 'ascii');
+
+              console.log(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'))
+
+             import(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'))
+              .then(module=>{
+                console.log(module)
+              })
+              
+
+              //Do some conversion to deal with the external behavior files
+
 
               this._panel.webview.postMessage(
                 {
@@ -154,7 +166,7 @@ class CatCodingPanel {
               let file = "";
 
               file += `import GameBehaviors from '${behaviorPath}';\n`
-              
+
               file += "let GameObjects = ";
               file += JSON.stringify(gameObjects, null, 2);
               file += '\n';
