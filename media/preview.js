@@ -134,10 +134,7 @@ window.addEventListener('message', event => {
       break;
     case 'allScenes':
       console.log("Got scenes");
-      import("./save.js")
-        .then(module=>console.log(module))
-        .catch(error=>console.error(error));
-      //console.log(message.text);
+      
       var moduleData = message.text;
       var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
       import(b64moduleData)
