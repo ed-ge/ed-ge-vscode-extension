@@ -164,15 +164,17 @@ class CatCodingPanel {
                 }
                 await bundle.write(outputOptions);
                 console.log("Done writing file");
-                let file = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'rollup.js'), 'ascii');
-                console.log(file);
+                if (vscode.workspace.workspaceFolders) {
+                  let file = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'rollup.js'), 'ascii');
+                  console.log(file);
 
-                self._panel.webview.postMessage(
-                  {
-                    command: 'allScenes',
-                    text: file,
-                  }
-                );
+                  self._panel.webview.postMessage(
+                    {
+                      command: 'allScenes',
+                      text: file,
+                    }
+                  );
+                }
 
 
               }
@@ -181,6 +183,7 @@ class CatCodingPanel {
             }
             return;
           case 'createFile':
+            console.log("Got createFile")
             if (vscode.workspace.workspaceFolders) {
               let basePath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js');
               let behaviorPath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'GameBehaviors.js');
@@ -193,7 +196,7 @@ class CatCodingPanel {
 
               let file = "";
 
-              file += `import GameBehaviors from './GameBehaviors';\n`
+              file += `import GameBehaviors from './GameBehaviors.js';\n`
 
               file += "let GameObjects = ";
               file += JSON.stringify(gameObjects, null, 2);
@@ -212,6 +215,8 @@ class CatCodingPanel {
 
               fs.writeFileSync(basePath, file);
               fs.writeFileSync(behaviorPath, gameBehaviors);
+              console.log("Wrote file");
+              //console.log(file);
             }
         }
       },
