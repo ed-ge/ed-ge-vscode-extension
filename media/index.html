@@ -16,6 +16,7 @@
       width: 100%;
       height: 100%;
       color: black;
+      font: Consolas;
 
     }
 
@@ -37,6 +38,8 @@
       flex: 1 1 0;
       display: flex;
       flex-direction: row;
+      padding-top: 1px;
+      padding-bottom: 1px;
     }
 
     .half {
@@ -53,9 +56,23 @@
 
     }
 
+    input {
+      width: 80px;
+      background-color: #EEEEEE;
+      padding: 2px;
+    }
+
+    .strong{
+      font-weight:bold;
+    }
+
+    .top{
+      padding-top:10px;
+    }
+
     .flex_main_column {
       flex: 0 0 200px;
-      padding: 2px;
+
     }
 
     .flex_drawer_row {
@@ -66,6 +83,12 @@
       flex: 1 1 0;
       background-color: green
     }
+
+    .section {
+      margin: 2px;
+      border: 1px solid #444444;
+      padding: 2px;
+    }
   </style>
 
 </head>
@@ -75,34 +98,40 @@
     <div class="flex_container">
       <div class="flex_drawer">
         <div class="flex_main_column">
-          <div>
-            Scenes
-          </div>
-          <div>
-            <button @click="get()">Get</button>
-          </div>
-          <div>
-            <button @click="save()">Save</button>
-          </div>
-          <div v-if="setup">
-            <div v-for="scene in scenes" :key="scene.name">
-              <button @click="selectScene(scene)">{{scene.name}}</button>
+          <div class="section">
+            <div class="row strong">
+              Scenes
             </div>
-          </div>
-          <div>
-            <a href="#" @click="addNewScene()">[Add Scene...]</a>
-          </div>
-          Game Objects
-          <div>
-            <div v-if="scene == null">
-              Choose a Scene to see its contents
+            <div class="row">
+              <button @click="get()">Get</button>
             </div>
-            <div v-else>
-              <div>
-                {{scene.name}}
+            <div class="row">
+              <button @click="save()">Save</button>
+            </div>
+            <div v-if="setup">
+              <div v-for="scene in scenes" :key="scene.name" class="row">
+                <button @click="selectScene(scene)">{{scene.name}}</button>
               </div>
-              <div v-for="object in scene.children">
-                <button @click="selectObject(object)">{{object.name}}</button>
+            </div>
+            <div class="row">
+              <a href="#" @click="addNewScene()">[Add Scene...]</a>
+            </div>
+          </div>
+          <div class="section">
+            <div class="row strong">
+              Game Objects
+            </div>
+            <div>
+              <div v-if="scene == null" class="row">
+                Choose a Scene to see its contents
+              </div>
+              <div v-else>
+                <div class="row">
+                  {{scene.name}}
+                </div>
+                <div v-for="object in scene.children" class="row">
+                  <button @click="selectObject(object)">{{object.name}}</button>
+                </div>
               </div>
             </div>
           </div>
@@ -111,57 +140,58 @@
 
 
         <div class="flex_main_column">
-          <div>
-            Components
-          </div>
-          <div v-if="gameObject==null">
-            Select a GameObject to see its components
-          </div>
-          <div v-else>
-            <div class="column">
-              <div class="row">
-                <div>{{gameObject.constructor.name}}</div>
-              </div>
-              <div class="row">
-                <div class="half">Name:</div>
-                <div class="half"><input type="text" v-model='gameObject.name'></div>
-              </div>
-
-              <div class="row">
-                <div class="half">X:</div>
-                <div class="half"> <input type="text" v-model='gameObject.x'></div>
-              </div>
-              <div class="row">
-                <div class="half">Y:</div>
-                <div class="half"> <input type="text" v-model='gameObject.y'></div>
-              </div>
-              <div class="row">
-                <div class="half">Scale X: </div>
-                <div class="half"><input type="text" v-model='gameObject.scaleX'></div>
-              </div>
-              <div class="row">
-                <div class="half">Scale Y:</div>
-                <div class="half"> <input type="text" v-model='gameObject.scaleY'></div>
-              </div>
-              <div class="row">
-                <div class="half">Rotation:</div>
-                <div class="half"> <input type="text" v-model='gameObject.rotation'></div>
-              </div>
-              <div v-for="(component,index) in gameObject.components" :key="index">
+          <div class="section">
+            <div class="row strong">
+              Components
+            </div>
+            <div v-if="gameObject==null">
+              Select a GameObject to see its components
+            </div>
+            <div v-else>
+              <div class="column">
                 <div class="row">
-                  <div>{{component.constructor.name}}</div>
+                  <div>{{gameObject.constructor.name}}</div>
                 </div>
-                <div v-for="(value,index) in Object.keys(component)" :key="index">
-                  <div v-if="value!='gameObject'">                    
+                <div class="row">
+                  <div class="half">Name:</div>
+                  <div class="half"><input type="text" v-model='gameObject.name'></div>
+                </div>
+
+                <div class="row">
+                  <div class="half">X:</div>
+                  <div class="half"> <input type="text" v-model='gameObject.x'></div>
+                </div>
+                <div class="row">
+                  <div class="half">Y:</div>
+                  <div class="half"> <input type="text" v-model='gameObject.y'></div>
+                </div>
+                <div class="row">
+                  <div class="half">Scale X: </div>
+                  <div class="half"><input type="text" v-model='gameObject.scaleX'></div>
+                </div>
+                <div class="row">
+                  <div class="half">Scale Y:</div>
+                  <div class="half"> <input type="text" v-model='gameObject.scaleY'></div>
+                </div>
+                <div class="row">
+                  <div class="half">Rotation:</div>
+                  <div class="half"> <input type="text" v-model='gameObject.rotation'></div>
+                </div>
+                <div v-for="(component,index) in gameObject.components" :key="index">
+                  <div class="row strong top">
+                    <div>{{component.constructor.name}}</div>
+                  </div>
+                  <div v-for="(value,index) in Object.keys(component)" :key="index">
+                    <div v-if="value!='gameObject'">
                       <div class="row">
                         <div class="half">{{value.substring(0,10)}}:</div>
                         <div class="half"> <input type="text" v-model="component[value]"></div>
                       </div>
-                    
+
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- <div>
+                <!-- <div>
                 <div v-for="(componentValue,index) in gameObject.componentValues" :key="index">
                   <div>{{componentValue.type}}</div>
                   <div v-for="(value,index) in componentValue.values" :key="index">
@@ -171,8 +201,10 @@
                 </div>
               </div> -->
 
+              </div>
             </div>
           </div>
+
         </div>
       </div>
       <div class="flex_body" id="canvas_parent">
