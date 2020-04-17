@@ -1,6 +1,8 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import { window } from 'vscode';
+
 const rollup = require('rollup');
 
 
@@ -97,6 +99,12 @@ class CatCodingPanel {
       (message: any) => {
         let files;
         switch (message.command) {
+          case 'newScene':
+            this.showInputBox();
+            break;
+          case 'deleteScene':
+            this.showQuickPick(message.text)
+            break;
           case 'getScenes':
             console.log("Getting scenes");
             if (vscode.workspace.workspaceFolders) {
@@ -265,5 +273,40 @@ class CatCodingPanel {
     let content = fs.readFileSync(path.join(this._extensionPath, 'media', 'index.html'), 'utf-8');
     content = content.replace("${webview.cspSource}", `${webview.asWebviewUri(scriptPathOnDisk)}`);
     return content;
+  }
+
+  private async showInputBox() {
+    
+    const result = await window.showInputBox({
+      value: '',
+      placeHolder: 'Name of the new scene',
+      validateInput: text => {
+        window.showInformationMessage(`Validating: ${text}`);
+        return text.trim() === '' ? 'The value cannot be blank!' : null;
+      }
+    });
+    window.showInformationMessage(`Creating new scene: ${result}`);
+    this._panel.webview.postMessage(
+      {
+        command: 'newScene',
+        text: result,
+      }
+    );
+  }
+  private async showQuickPick(scene:string) {
+    let i = 0;
+    const result = await window.showQuickPick(['OK', 'Cancel'], {
+      placeHolder: 'Do you want to delete the scene' + scene,
+      //onDidSelectItem: item => window.showInformationMessage(`Focus ${++i}: ${item}`)
+    });
+    window.showInformationMessage(`Got: ${result}`);
+    if(result === "OK"){
+      this._panel.webview.postMessage(
+        {
+          command: 'deleteScene',
+          text: scene,
+        }
+      );
+    }
   }
 }

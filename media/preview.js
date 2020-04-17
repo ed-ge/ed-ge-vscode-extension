@@ -99,6 +99,23 @@ var app = new Vue({
         text: JSON.stringify({ gameObjects, gameBehaviors, scenes })
       })
     },
+    deleteScene(scene){
+      this.vscode.postMessage({
+        command:'deleteScene',
+        text:scene.name,
+      })
+    },
+    newScene(){
+      this.vscode.postMessage({
+        command:'newScene'
+      })
+      // let response = prompt("What is the name of the new scene", "New Scene").trim();
+      // if(!response || !(response.trim())) return;
+      
+      // let scene = new Base.Scene();
+      // scene.name = response;
+      // this.scenes.push(scene)
+    },
     selectScene(scene) {
       console.log("Selecting scene " + name)
       //this.vscode.postMessage({ command: 'selectScene', text: name })
@@ -132,6 +149,15 @@ window.addEventListener('message', event => {
     case 'allFiles':
       app.files = message.text;
       break;
+    case 'deleteScene':
+      app.scenes = app.scenes.filter(i=>i.name != message.text);
+      break;
+    case 'newScene': //The user provided input for a new scene name
+      let scene = new Base.Scene({name:message.text}, Base.prefabs, Base.components, app.behaviors);
+      scene.name = message.text;
+      console.log("Created new scene" + "|" + message.text + "|")
+      app.scenes.push(scene);
+    break;
     case 'allScenes':
       console.log("Got scenes");
       
