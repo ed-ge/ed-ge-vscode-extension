@@ -204,7 +204,8 @@ class CatCodingPanel {
           case 'object':
             console.log("Got Object")
             let o = JSON.parse(message.text);
-            //CatCodingPanel.treeView.setInfo(o);
+            //console.log(message.text);
+            CatCodingPanel.treeView.setInfo(o);
             return;
           case 'createFile':
             console.log("Got createFile")
