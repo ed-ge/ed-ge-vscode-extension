@@ -1,18 +1,21 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+import * as requireFromString from 'require-from-string';
 import { NodeDependenciesProvider } from './treeView';
 
 const rollup = require('rollup');
 
 
 export function activate(context: vscode.ExtensionContext) {
-  
-  if(vscode.workspace.rootPath)
-  vscode.window.createTreeView('nodeDependencies', {
-    treeDataProvider: new NodeDependenciesProvider(vscode.workspace.rootPath)
-  });
-	
+
+  if (vscode.workspace.rootPath) {
+    let treeView = new NodeDependenciesProvider(vscode.workspace.rootPath)
+    CatCodingPanel.treeView = treeView;
+    vscode.window.createTreeView('nodeDependencies', {
+      treeDataProvider: treeView
+    });
+  }
   context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
       CatCodingPanel.createOrShow(context.extensionPath);
@@ -25,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Make sure we register a serializer in activation event
     vscode.window.registerWebviewPanelSerializer(CatCodingPanel.viewType, {
       async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
-        console.log(`Got state: ${state}`);
+        //console.log(`Got state: ${state}`);
         CatCodingPanel.revive(webviewPanel, context.extensionPath);
       }
     });
@@ -40,6 +43,8 @@ class CatCodingPanel {
 	 * Track the currently panel. Only allow a single panel to exist at a time.
 	 */
   public static currentPanel: CatCodingPanel | undefined;
+
+  public static treeView: NodeDependenciesProvider;
 
   public static readonly viewType = 'ed-ge';
 
@@ -112,9 +117,9 @@ class CatCodingPanel {
             this.confirmDeleteScene(message.text)
             break;
           case 'getScenes':
-            console.log("Getting scenes");
+            //console.log("Getting scenes");
             if (vscode.workspace.workspaceFolders) {
-              console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
+              //console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
               //let GameBehaviorFileContents = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'GameBehaviors.js'), 'ascii');
 
               //console.log(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'))
@@ -135,7 +140,7 @@ class CatCodingPanel {
                 // create a bundle
                 const bundle = await rollup.rollup(inputOptions);
 
-                console.log(bundle.watchFiles); // an array of file names this bundle depends on
+                //console.log(bundle.watchFiles); // an array of file names this bundle depends on
 
                 // generate output specific code in-memory
                 // you can call this function multiple times on the same bundle object
@@ -149,7 +154,7 @@ class CatCodingPanel {
                     //   source: string | Uint8Array    // the asset source
                     //   type: 'asset'                  // signifies that this is an asset
                     // }
-                    console.log('Asset', chunkOrAsset);
+                    //console.log('Asset', chunkOrAsset);
                   } else {
                     // For chunks, this contains
                     // {
@@ -173,14 +178,14 @@ class CatCodingPanel {
                     //   name: string                   // the name of this chunk as used in naming patterns
                     //   type: 'chunk',                 // signifies that this is a chunk
                     // }
-                    console.log('Chunk', chunkOrAsset.modules);
+                    //console.log('Chunk', chunkOrAsset.modules);
                   }
                 }
                 await bundle.write(outputOptions);
-                console.log("Done writing file");
+                //console.log("Done writing file");
                 if (vscode.workspace.workspaceFolders) {
                   let file = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'rollup.js'), 'ascii');
-                  console.log(file);
+                  //console.log(file);
 
                   self._panel.webview.postMessage(
                     {
@@ -196,6 +201,11 @@ class CatCodingPanel {
 
             }
             return;
+          case 'object':
+            console.log("Got Object")
+            let o = JSON.parse(message.text);
+            //CatCodingPanel.treeView.setInfo(o);
+            return;
           case 'createFile':
             console.log("Got createFile")
             if (vscode.workspace.workspaceFolders) {
@@ -204,6 +214,7 @@ class CatCodingPanel {
               //let behaviors = import(behaviorPath);
 
               let info = JSON.parse(message.text);
+              CatCodingPanel.treeView.setInfo(info);
               let gameObjects = info.gameObjects;
               let gameBehaviors = info.gameBehaviors;
               let scenes = info.scenes;
@@ -282,7 +293,7 @@ class CatCodingPanel {
   }
 
   private async inputBoxSceneName() {
-    
+
     const result = await vscode.window.showInputBox({
       value: '',
       placeHolder: 'Name of the new scene',
@@ -299,14 +310,14 @@ class CatCodingPanel {
       }
     );
   }
-  private async confirmDeleteScene(scene:string) {
+  private async confirmDeleteScene(scene: string) {
     let i = 0;
     const result = await vscode.window.showQuickPick(['OK', 'Cancel'], {
       placeHolder: 'Do you want to delete the scene' + scene,
       //onDidSelectItem: item => window.showInformationMessage(`Focus ${++i}: ${item}`)
     });
     vscode.window.showInformationMessage(`Got: ${result}`);
-    if(result === "OK"){
+    if (result === "OK") {
       this._panel.webview.postMessage(
         {
           command: 'deleteScene',

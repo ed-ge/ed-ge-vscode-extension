@@ -175,6 +175,10 @@ window.addEventListener('message', event => {
           app.startScene = module.Scenes.startScene;
           console.log(app.scenes);
           app.setup = true;
+          app.vscode.postMessage({
+            command:"object",
+            text:JSON.stringify(app.scenes, (name, value)=>name=="gameObject"?undefined:value)
+          })
 
         })
         .catch(err => {
