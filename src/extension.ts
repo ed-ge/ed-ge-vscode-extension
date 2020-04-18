@@ -36,8 +36,6 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-
-
   if (vscode.window.registerWebviewPanelSerializer) {
     // Make sure we register a serializer in activation event
     vscode.window.registerWebviewPanelSerializer(CatCodingPanel.viewType, {

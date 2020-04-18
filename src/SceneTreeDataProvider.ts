@@ -30,7 +30,7 @@ export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency
     if (!element) {
       let toReturn = [];
       for (let scene of this.info) {
-        let d = new Dependency(scene.name, "scene", scene, vscode.TreeItemCollapsibleState.Collapsed);
+        let d = new Dependency(scene.name, "scene", scene, vscode.TreeItemCollapsibleState.None);
         toReturn.push(d);
       }
       return Promise.resolve(toReturn);
