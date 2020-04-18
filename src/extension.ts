@@ -9,14 +9,16 @@ const rollup = require('rollup');
 
 export function activate(context: vscode.ExtensionContext) {
 
-  if (vscode.workspace.rootPath) {
-    let treeView = new NodeDependenciesProvider(vscode.workspace.rootPath)
+    let treeView = new NodeDependenciesProvider()
     CatCodingPanel.treeView = treeView;
     vscode.window.createTreeView('nodeDependencies', {
       treeDataProvider: treeView
     });
-  }
-  context.subscriptions.push(
+    vscode.commands.registerCommand('nodeDependencies.refreshEntry', () =>
+      treeView.refresh()
+    );
+  
+    context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
       CatCodingPanel.createOrShow(context.extensionPath);
     })

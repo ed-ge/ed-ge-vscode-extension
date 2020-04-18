@@ -1,22 +1,11 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { toASCII } from 'punycode';
-import * as requireFromString from 'require-from-string';
-const rollup = require('rollup');
-
-
-
-
 
 export class NodeDependenciesProvider implements vscode.TreeDataProvider<Dependency> {
   tree = new Dependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
   info: any[] = [];
-  constructor(private workspaceRoot: string) {
-
-
-
-
+  constructor() {
   }
 
   private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined> = new vscode.EventEmitter<Dependency | undefined>();
@@ -31,6 +20,10 @@ export class NodeDependenciesProvider implements vscode.TreeDataProvider<Depende
     console.log(this.info);
     this._onDidChangeTreeData.fire();
 
+  }
+
+  refresh(){
+    this._onDidChangeTreeData.fire();
   }
 
   getChildren(element?: Dependency): Thenable<Dependency[]> {

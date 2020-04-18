@@ -1,68 +1,85 @@
 {
-	"name": "ed-ge",
-	"display-name": "ed-ge game engine",
-	"description": "Educational game engine to prepare students for commercial game engines.",
-	"version": "1.0.0",
-	"publisher": "ed-ge",
-	"categories": [
-		"Other"
-	],
-	"keywords": [
-		"game engine",
-		"educational"
-	],
-	"license": "MIT",
-	"icon": "icon.png",
-	"galleryBanner": {
-		"color": "#FFFFFF",
-		"theme": "dark"
-	},
-	"engines": {
-		"vscode": "^1.23.0"
-	},
-	"activationEvents": [
-		"onWebviewPanel:ed-ge",
-		"onCommand:ed-ge.start"
-	],
-	"main": "./out/extension",
-	"contributes": {
-		"commands": [
-			{
-				"command": "ed-ge.start",
-				"title": "Start ed-ge",
-				"category": "ed-ge"
-			}
-		],
-		"views": {
-			"explorer": [
-				{
-					"id": "nodeDependencies",
-					"name": "Node Dependencies"
-				}
-			]
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "tsc -p ./",
-		"compile": "tsc -watch -p ./"
-	},
-	"dependencies": {
-		"@types/glob": "^7.1.1",
-		"@types/mocha": "^7.0.1",
-		"@types/ncp": "^2.0.3",
-		"mocha": "^7.0.1",
-		"ncp": "^2.0.0"
-	},
-	"devDependencies": {
-		"@rollup/plugin-typescript": "^4.1.1",
-		"@types/node": "^9.4.6",
-		"@types/require-from-string": "^1.2.0",
-		"@types/vscode": "^1.23.0",
-		"require-from-string": "^2.0.2",
-		"rollup": "^2.6.1",
-		"tslib": "^1.11.1",
-		"tslint": "^5.16.0",
-		"typescript": "^2.8.3",
-		"vscode-test": "^1.3.0"
-	}
+  "name": "ed-ge",
+  "display-name": "ed-ge game engine",
+  "description": "Educational game engine to prepare students for commercial game engines.",
+  "version": "1.0.0",
+  "publisher": "ed-ge",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "game engine",
+    "educational"
+  ],
+  "license": "MIT",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#FFFFFF",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.23.0"
+  },
+  "activationEvents": [
+    "onWebviewPanel:ed-ge",
+    "onCommand:ed-ge.start"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ed-ge.start",
+        "title": "Start ed-ge",
+        "category": "ed-ge"
+      },
+      {
+        "command": "nodeDependencies.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "media/resources/light/refresh.svg",
+          "dark": "media/resources/dark/refresh.svg"
+        }
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "nodeDependencies",
+          "name": "Node Dependencies"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+          {
+              "command": "nodeDependencies.refreshEntry",
+              "when": "view == nodeDependencies",
+              "group": "navigation"
+          }
+        ]
+      }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^7.0.1",
+    "@types/ncp": "^2.0.3",
+    "mocha": "^7.0.1",
+    "ncp": "^2.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^4.1.1",
+    "@types/node": "^9.4.6",
+    "@types/require-from-string": "^1.2.0",
+    "@types/vscode": "^1.23.0",
+    "require-from-string": "^2.0.2",
+    "rollup": "^2.6.1",
+    "tslib": "^1.11.1",
+    "tslint": "^5.16.0",
+    "typescript": "^2.8.3",
+    "vscode-test": "^1.3.0"
+  }
 }
