@@ -33,7 +33,7 @@
         "category": "ed-ge"
       },
       {
-        "command": "nodeDependencies.refreshEntry",
+        "command": "sceneTreeDataProvider.refreshEntry",
         "title": "Refresh",
         "icon": {
           "light": "media/resources/light/refresh.svg",
@@ -42,22 +42,40 @@
       }
     ],
     "views": {
-      "explorer": [
+      "package-explorer": [
         {
-          "id": "nodeDependencies",
-          "name": "Node Dependencies"
+          "id": "sceneTreeDataProvider",
+          "name": "Scenes"
+        },
+        {
+          "id": "gameObjectTreeDataProvider",
+          "name": "Game Objects"
+        },
+        {
+          "id": "componentTreeDataProvider",
+          "name": "Components"
         }
+
       ]
     },
     "menus": {
       "view/title": [
-          {
-              "command": "nodeDependencies.refreshEntry",
-              "when": "view == nodeDependencies",
-              "group": "navigation"
-          }
-        ]
-      }
+        {
+          "command": "sceneTreeDataProvider.refreshEntry",
+          "when": "view == sceneTreeDataProvider",
+          "group": "navigation"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "package-explorer",
+          "title": "ed-dg",
+          "icon": "media/resources/dark/folder.svg"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "tsc -p ./",

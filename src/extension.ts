@@ -1,24 +1,36 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import * as requireFromString from 'require-from-string';
-import { NodeDependenciesProvider } from './treeView';
+import { SceneTreeDataProvider } from './SceneTreeDataProvider';
+import { ComponentTreeDataProvider } from './ComponentTreeDataProvider';
+import { GameObjectTreeDataProvider } from './GameObjectTreeDataProvider';
 
 const rollup = require('rollup');
 
 
 export function activate(context: vscode.ExtensionContext) {
 
-    let treeView = new NodeDependenciesProvider()
-    CatCodingPanel.treeView = treeView;
-    vscode.window.createTreeView('nodeDependencies', {
-      treeDataProvider: treeView
-    });
-    vscode.commands.registerCommand('nodeDependencies.refreshEntry', () =>
-      treeView.refresh()
-    );
-  
-    context.subscriptions.push(
+  let componentTreeDataProvider = new ComponentTreeDataProvider();
+  let gameObjectTreeDataProvider = new GameObjectTreeDataProvider();
+  let sceneTreeDataProvider = new SceneTreeDataProvider()
+  CatCodingPanel.treeView = sceneTreeDataProvider;
+  vscode.window.createTreeView('sceneTreeDataProvider', {
+    treeDataProvider: sceneTreeDataProvider
+  });
+
+  vscode.window.createTreeView('gameObjectTreeDataProvider', {
+    treeDataProvider: gameObjectTreeDataProvider
+  });
+
+  vscode.window.createTreeView('componentTreeDataProvider', {
+    treeDataProvider: componentTreeDataProvider
+  });
+
+  vscode.commands.registerCommand('sceneTreeDataProvider.refreshEntry', () =>
+    sceneTreeDataProvider.refresh()
+  );
+
+  context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
       CatCodingPanel.createOrShow(context.extensionPath);
     })
@@ -46,7 +58,7 @@ class CatCodingPanel {
 	 */
   public static currentPanel: CatCodingPanel | undefined;
 
-  public static treeView: NodeDependenciesProvider;
+  public static treeView: SceneTreeDataProvider;
 
   public static readonly viewType = 'ed-ge';
 
