@@ -1,12 +1,18 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { window } from 'vscode';
+import { NodeDependenciesProvider } from './treeView';
 
 const rollup = require('rollup');
 
 
 export function activate(context: vscode.ExtensionContext) {
+  
+  if(vscode.workspace.rootPath)
+  vscode.window.createTreeView('nodeDependencies', {
+    treeDataProvider: new NodeDependenciesProvider(vscode.workspace.rootPath)
+  });
+	
   context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
       CatCodingPanel.createOrShow(context.extensionPath);
@@ -100,10 +106,10 @@ class CatCodingPanel {
         let files;
         switch (message.command) {
           case 'newScene':
-            this.showInputBox();
+            this.inputBoxSceneName();
             break;
           case 'deleteScene':
-            this.showQuickPick(message.text)
+            this.confirmDeleteScene(message.text)
             break;
           case 'getScenes':
             console.log("Getting scenes");
@@ -275,17 +281,17 @@ class CatCodingPanel {
     return content;
   }
 
-  private async showInputBox() {
+  private async inputBoxSceneName() {
     
-    const result = await window.showInputBox({
+    const result = await vscode.window.showInputBox({
       value: '',
       placeHolder: 'Name of the new scene',
       validateInput: text => {
-        window.showInformationMessage(`Validating: ${text}`);
+        vscode.window.showInformationMessage(`Validating: ${text}`);
         return text.trim() === '' ? 'The value cannot be blank!' : null;
       }
     });
-    window.showInformationMessage(`Creating new scene: ${result}`);
+    vscode.window.showInformationMessage(`Creating new scene: ${result}`);
     this._panel.webview.postMessage(
       {
         command: 'newScene',
@@ -293,13 +299,13 @@ class CatCodingPanel {
       }
     );
   }
-  private async showQuickPick(scene:string) {
+  private async confirmDeleteScene(scene:string) {
     let i = 0;
-    const result = await window.showQuickPick(['OK', 'Cancel'], {
+    const result = await vscode.window.showQuickPick(['OK', 'Cancel'], {
       placeHolder: 'Do you want to delete the scene' + scene,
       //onDidSelectItem: item => window.showInformationMessage(`Focus ${++i}: ${item}`)
     });
-    window.showInformationMessage(`Got: ${result}`);
+    vscode.window.showInformationMessage(`Got: ${result}`);
     if(result === "OK"){
       this._panel.webview.postMessage(
         {

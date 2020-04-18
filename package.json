@@ -32,7 +32,15 @@
 				"title": "Start ed-ge",
 				"category": "ed-ge"
 			}
-		]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "nodeDependencies",
+          "name": "Node Dependencies"
+        }
+      ]
+    }
 	},
 	"scripts": {
 		"vscode:prepublish": "tsc -p ./",
