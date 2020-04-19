@@ -17,11 +17,21 @@ class Dependency extends vscode.TreeItem {
         light: path.join(__filename, '..', '..', 'media', 'resources', 'light', 'dependency.svg'),
         dark: path.join(__filename, '..', '..', 'media', 'resources', 'dark', 'dependency.svg')
       };
+      this.command = {
+        command:"sceneTreeDataProvider.selectScene",
+        title:"Select Scene",
+        arguments:[this],
+      };
     }
     if (type === "gameObject") {
       this.iconPath = {
         light: path.join(__filename, '..', '..', 'media', 'resources', 'light', 'boolean.svg'),
         dark: path.join(__filename, '..', '..', 'media', 'resources', 'dark', 'boolean.svg')
+      };
+      this.command = {
+        command:"gameObjectTreeDataProvider.selectGameObject",
+        title:"Select Game Object",
+        arguments:[this],
       };
     }
     if (type === "component") {
@@ -41,6 +51,8 @@ class Dependency extends vscode.TreeItem {
   public addChildren(children: Dependency[]) {
     this.children = children;
   }
+
+  
 
 
 }

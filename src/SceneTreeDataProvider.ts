@@ -1,7 +1,10 @@
 import * as vscode from 'vscode';
 import Dependency from "./Dependency"
+import { GameObjectTreeDataProvider } from './GameObjectTreeDataProvider';
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+
+  
   tree = new Dependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
   info: any[] = [];
   constructor() {

@@ -12,7 +12,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   let componentTreeDataProvider = new ComponentTreeDataProvider();
   let gameObjectTreeDataProvider = new GameObjectTreeDataProvider();
-  let sceneTreeDataProvider = new SceneTreeDataProvider()
+  let sceneTreeDataProvider = new SceneTreeDataProvider();
+
+  
   CatCodingPanel.treeView = sceneTreeDataProvider;
   vscode.window.createTreeView('sceneTreeDataProvider', {
     treeDataProvider: sceneTreeDataProvider
@@ -28,6 +30,14 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.commands.registerCommand('sceneTreeDataProvider.refreshEntry', () =>
     sceneTreeDataProvider.refresh()
+  );
+
+  vscode.commands.registerCommand("sceneTreeDataProvider.selectScene", (scene) =>
+    gameObjectTreeDataProvider.selectScene(scene)
+  );
+
+  vscode.commands.registerCommand("gameObjectTreeDataProvider.selectGameObject", (gameObject) =>
+    componentTreeDataProvider.selectGameObject(gameObject)
   );
 
   context.subscriptions.push(

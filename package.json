@@ -39,6 +39,16 @@
           "light": "media/resources/light/refresh.svg",
           "dark": "media/resources/dark/refresh.svg"
         }
+      },
+      {
+        "command":"sceneTreeDataProvider.selectScene",
+        "title":"Select Scene",
+        "category":"ed-ge"
+      },
+      {
+        "command":"gameObjectTreeDataProvider.selectGameObject",
+        "title":"Select GameObject",
+        "category":"ed-ge"
       }
     ],
     "views": {
