@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
+import ADependency from "./ADependency"
 import Dependency from "./Dependency"
 import { GameObjectTreeDataProvider } from './GameObjectTreeDataProvider';
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
 
   
-  tree = new Dependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
+  tree = new ADependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
   info: any[] = [];
   constructor() {
   }
@@ -31,7 +32,7 @@ export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency
   getChildren(element?: Dependency): Thenable<Dependency[]> {
     let toReturn = [];
     for (let scene of this.info) {
-      let d = new Dependency(scene.name, "scene", scene, vscode.TreeItemCollapsibleState.None);
+      let d = new ADependency(scene.name, "scene", scene, vscode.TreeItemCollapsibleState.None);
       toReturn.push(d);
     }
     return Promise.resolve(toReturn);

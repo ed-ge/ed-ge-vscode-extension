@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import Dependency from "./Dependency"
+import ADependency from "./ADependency"
 import { ComponentTreeDataProvider } from './ComponentTreeDataProvider';
 import { SceneTreeDataProvider } from './SceneTreeDataProvider';
 
@@ -10,9 +11,10 @@ export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Depen
     this._onDidChangeTreeData.fire();
 
   }
-  tree = new Dependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
+  tree = new ADependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
   info: any[] = [];
-  components: ComponentTreeDataProvider;
+  components: any;
+  scene:any;
   
   constructor() {
   }
@@ -40,7 +42,7 @@ export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Depen
         let object = this.scene.nameable.objects[i];
         child.objectComponents = object.components;
         let hasChildren = child.children.length > 0;
-        toReturn.push(new Dependency(child.name, "gameObject", child, hasChildren ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
+        toReturn.push(new ADependency(child.name, "gameObject", child, hasChildren ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
       }
     }
     else{
@@ -49,25 +51,11 @@ export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Depen
         let object = element.nameable.objects[i];
         child.objectComponents = object.components;
         let hasChildren = child.children.length > 0;
-        toReturn.push(new Dependency(child.name, "gameObject", child, hasChildren ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
+        toReturn.push(new ADependency(child.name, "gameObject", child, hasChildren ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
       }
     }
 
-    /*if (element.type == "gameObject") {
-      //if (element.nameable.components && element.nameable.components instanceof Array) {
-      for (let i = 0; i < element.nameable.components.length; i++) {
-        let component = element.nameable.components[i];
-        let objectComponent = element.nameable.objectComponents[i];
-        let name = objectComponent.split("|")[0];
-        toReturn.push(new Dependency(name, "component", component, vscode.TreeItemCollapsibleState.Collapsed));
-      }
-    }
-    if (element.type == "component") {
-      for (let key in element.nameable) {
-        toReturn.push(new Dependency(key + "-" + element.nameable[key], "componentValue", element.nameable[key], vscode.TreeItemCollapsibleState.None))
-      }
-
-    }*/
+    
     return Promise.resolve(toReturn);
   }
 

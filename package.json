@@ -33,11 +33,75 @@
         "category": "ed-ge"
       },
       {
-        "command": "sceneTreeDataProvider.refreshEntry",
-        "title": "Refresh",
+        "command": "sceneTreeDataProvider.addScene",
+        "title": "Add Scene",
         "icon": {
-          "light": "media/resources/light/refresh.svg",
-          "dark": "media/resources/dark/refresh.svg"
+          "light": "media/resources/light/plus.svg",
+          "dark": "media/resources/dark/plus.svg"
+        }
+      },
+      {
+        "command": "sceneTreeDataProvider.editScene",
+        "title": "Edit Scene",
+        "icon": {
+          "light": "media/resources/light/edit.svg",
+          "dark": "media/resources/dark/edit.svg"
+        }
+      },
+      {
+        "command": "sceneTreeDataProvider.deleteScene",
+        "title": "Delete Scene",
+        "icon": {
+          "light": "media/resources/light/trash-alt.svg",
+          "dark": "media/resources/dark/trash-alt.svg"
+        }
+      },
+      {
+        "command": "gameObjectTreeDataProvider.addGameObject",
+        "title": "Add Scene",
+        "icon": {
+          "light": "media/resources/light/plus.svg",
+          "dark": "media/resources/dark/plus.svg"
+        }
+      },
+      {
+        "command": "gameObjectTreeDataProvider.editGameObject",
+        "title": "Edit Game Object",
+        "icon": {
+          "light": "media/resources/light/edit.svg",
+          "dark": "media/resources/dark/edit.svg"
+        }
+      },
+      {
+        "command": "gameObjectTreeDataProvider.deleteGameObject",
+        "title": "Delete Game Object",
+        "icon": {
+          "light": "media/resources/light/trash-alt.svg",
+          "dark": "media/resources/dark/trash-alt.svg"
+        }
+      },
+      {
+        "command": "componentTreeDataProvider.addComponent",
+        "title": "Add Component",
+        "icon": {
+          "light": "media/resources/light/plus.svg",
+          "dark": "media/resources/dark/plus.svg"
+        }
+      },
+      {
+        "command": "componentTreeDataProvider.deleteComponent",
+        "title": "Delete Component",
+        "icon": {
+          "light": "media/resources/light/trash-alt.svg",
+          "dark": "media/resources/dark/trash-alt.svg"
+        }
+      },
+      {
+        "command": "componentTreeDataProvider.editComponentValue",
+        "title": "Edit Component",
+        "icon": {
+          "light": "media/resources/light/edit.svg",
+          "dark": "media/resources/dark/edit.svg"
         }
       },
       {
@@ -70,9 +134,51 @@
     "menus": {
       "view/title": [
         {
-          "command": "sceneTreeDataProvider.refreshEntry",
+          "command": "sceneTreeDataProvider.addScene",
           "when": "view == sceneTreeDataProvider",
           "group": "navigation"
+        },
+        {
+          "command": "gameObjectTreeDataProvider.addGameObject",
+          "when": "view == gameObjectTreeDataProvider",
+          "group": "navigation"
+        },
+        {
+          "command": "componentTreeDataProvider.addComponent",
+          "when": "view == componentTreeDataProvider",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command":"sceneTreeDataProvider.editScene",
+          "when" : "view == sceneTreeDataProvider",
+          "group":"inline"
+        },
+        {
+          "command":"sceneTreeDataProvider.deleteScene",
+          "when" : "view == sceneTreeDataProvider",
+          "group":"inline"
+        },
+        {
+          "command":"gameObjectTreeDataProvider.editGameObject",
+          "when" : "view == gameObjectTreeDataProvider",
+          "group":"inline"
+        },
+        {
+          "command":"gameObjectTreeDataProvider.deleteGameObject",
+          "when" : "view == gameObjectTreeDataProvider",
+          "group":"inline"
+        },
+        {
+          "command":"componentTreeDataProvider.editComponentValue",
+          "when" : "view == componentTreeDataProvider && viewItem == componentValue",
+          "group":"inline"
+        },
+        {
+          "command":"componentTreeDataProvider.deleteComponent",
+          "when" : "view == componentTreeDataProvider && viewItem == ADependency ",
+          "group":"inline"
         }
       ]
     },
@@ -81,7 +187,7 @@
         {
           "id": "package-explorer",
           "title": "ed-dg",
-          "icon": "media/resources/dark/folder.svg"
+          "icon": "media/resources/dark/gamepad.svg"
         }
       ]
     }
