@@ -15,12 +15,7 @@
     body {
       width: 100%;
       height: 100%;
-      color: black;
-      font: Consolas;
-
     }
-
-
 
     .flex_container {
       display: flex;
@@ -28,215 +23,21 @@
       height: 100vh;
     }
 
-    .column {
-      display: flex;
-      flex-direction: column;
-
-    }
-
-    .row {
-      flex: 1 1 0;
-      display: flex;
-      flex-direction: row;
-      padding-top: 1px;
-      padding-bottom: 1px;
-    }
-
-    .half {
-      flex: 0 0 100px;
-      overflow: hidden;
-      margin-right: .1rem;
-    }
-
-    .flex_drawer {
-      flex: 0 0 400px;
-      display: flex;
-      flex-direction: row;
-      background-color: lightgray;
-
-    }
-
-    input {
-      width: 80px;
-      background-color: #EEEEEE;
-      padding: 2px;
-    }
-    button{
-      width:100%;
-    }
-
-    .small_button{
-      width:20px;
-      height:20px;
-      margin:2px;
-    }
-
-    .strong{
-      font-weight:bold;
-    }
-
-    .top{
-      padding-top:10px;
-    }
-
-    .flex_main_column {
-      flex: 0 0 200px;
-
-    }
-
-    .flex_drawer_row {
-      flex: 1 1 0;
-    }
-
     .flex_body {
       flex: 1 1 0;
-    }
-
-    .section {
-      margin: 2px;
-      border: 1px solid #444444;
-      padding: 2px;
     }
   </style>
 
 </head>
 
 <body>
-  <div id="app">
-    <div class="flex_container">
-      <div class="flex_drawer">
-        <div class="flex_main_column">
-          <div class="section">
-            <div class="row strong">
-              Menu
-            </div>
-            <div class="row">
-              <button @click="get()">Get</button>
-            </div>
-            <div class="row">
-              <button @click="save()">Save</button>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="row strong">
-              Scenes <button class="small_button" @click="newScene()">+</button>
-            </div>
-            
-            <div v-if="setup">
-              <div v-for="scene in scenes" :key="scene.name" class="row">
-                <span style="width:calc(100% - 40px)"><button @click="selectScene(scene)" style="width:100%;">{{scene.name}}</button></span><span style="width:20px"><button>E</button></span><span style="width:20px"><button @click="deleteScene(scene)">D</button></span>
-              </div>
-            </div>
-          </div>
-          <div class="section">
-            <div class="row strong">
-              Game Objects
-            </div>
-            <div>
-              <div v-if="scene == null" class="row">
-                Choose a Scene to see its contents
-              </div>
-              <div v-else>
-                <div class="row">
-                  {{scene.name}}
-                </div>
-                <div v-for="object in scene.children" class="row">
-                  <button @click="selectObject(object)">{{object.name}}</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-
-        <div class="flex_main_column">
-          <div class="section">
-            <div class="row strong">
-              Components
-            </div>
-            <div v-if="gameObject==null">
-              Select a GameObject to see its components
-            </div>
-            <div v-else>
-              <div class="column">
-                <div class="row">
-                  <div>{{gameObject.constructor.name}}</div>
-                </div>
-                <div class="row">
-                  <div class="half">Name:</div>
-                  <div class="half"><input type="text" v-model='gameObject.name'></div>
-                </div>
-
-                <div class="row">
-                  <div class="half">X:</div>
-                  <div class="half"> <input type="text" v-model='gameObject.x'></div>
-                </div>
-                <div class="row">
-                  <div class="half">Y:</div>
-                  <div class="half"> <input type="text" v-model='gameObject.y'></div>
-                </div>
-                <div class="row">
-                  <div class="half">Scale X: </div>
-                  <div class="half"><input type="text" v-model='gameObject.scaleX'></div>
-                </div>
-                <div class="row">
-                  <div class="half">Scale Y:</div>
-                  <div class="half"> <input type="text" v-model='gameObject.scaleY'></div>
-                </div>
-                <div class="row">
-                  <div class="half">Rotation:</div>
-                  <div class="half"> <input type="text" v-model='gameObject.rotation'></div>
-                </div>
-                <div v-for="(component,index) in gameObject.components" :key="index">
-                  <div class="row strong top">
-                    <div>{{component.constructor.name}}</div>
-                  </div>
-                  <div v-for="(value,index) in Object.keys(component)" :key="index">
-                    <div v-if="value!='gameObject'">
-                      <div class="row">
-                        <div class="half">{{value.substring(0,10)}}:</div>
-                        <div class="half"> <input type="text" v-model="component[value]"></div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-                <!-- <div>
-                <div v-for="(componentValue,index) in gameObject.componentValues" :key="index">
-                  <div>{{componentValue.type}}</div>
-                  <div v-for="(value,index) in componentValue.values" :key="index">
-                    <div>Key: {{value.key}}</div>
-                    <div>Value: {{value.value}}</div>
-                  </div>
-                </div>
-              </div> -->
-
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-      <div class="flex_body" id="canvas_parent">
-
-        <canvas id="canv" height="100vh"></canvas>
-      </div>
-    </div>
-  </div>
-
-
-  <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
-  <script src='https://unpkg.com/vue'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js'></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  <!-- <div class="flex_container">
+    <div class="flex_body" id="canvas_parent"> -->
+      <canvas id="canv" height="100vh"></canvas>
+    <!-- </div>
+  </div> -->
   <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@9b2be443761c3a05fe369460a6dc8adc5ba45f54/free/Base.js"></script>
-
-
   <script src="${webview.cspSource}" type="module"></script>
-
-
 </body>
 
 </html>
