@@ -15,27 +15,16 @@
     body {
       width: 100%;
       height: 100%;
-    }
-
-    .flex_container {
-      display: flex;
-      flex-direction: row;
-      height: 100vh;
-    }
-
-    .flex_body {
-      flex: 1 1 0;
+      border: 0;
+      margin: 0;
     }
   </style>
 
 </head>
 
 <body>
-  <!-- <div class="flex_container">
-    <div class="flex_body" id="canvas_parent"> -->
-      <canvas id="canv" height="100vh"></canvas>
-    <!-- </div>
-  </div> -->
+  <canvas id="canv" height="100vh"></canvas>
+
   <script src="https://cdn.jsdelivr.net/gh/ed-ge/ed-ge@9b2be443761c3a05fe369460a6dc8adc5ba45f54/free/Base.js"></script>
   <script src="${webview.cspSource}" type="module"></script>
 </body>
