@@ -8,9 +8,13 @@ class ComponentValueDependency extends Dependency {
   constructor(
     public readonly label: string,
     public value: string,
+    public key:string,
+    public component:any,
   ) {
     super(label, vscode.TreeItemCollapsibleState.None);
     this.value = value;
+    this.key = this.label;
+    this.label = this.label + " - " + this.value;
 
     this.iconPath = {
       light: path.join(__filename, '..', '..', 'media', 'resources', 'light', 'edit.svg'),

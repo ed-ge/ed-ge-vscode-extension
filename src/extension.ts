@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
   let gameObjectTreeDataProvider = new GameObjectTreeDataProvider();
   let sceneTreeDataProvider = new SceneTreeDataProvider();
 
-  
+
   CatCodingPanel.treeView = sceneTreeDataProvider;
   vscode.window.createTreeView('sceneTreeDataProvider', {
     treeDataProvider: sceneTreeDataProvider
@@ -38,6 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.commands.registerCommand("gameObjectTreeDataProvider.selectGameObject", (gameObject) =>
     componentTreeDataProvider.selectGameObject(gameObject)
+  );
+
+  vscode.commands.registerCommand("componentTreeDataProvider.editComponentValue", (componentValue) => {
+    console.log(componentValue);
+    componentTreeDataProvider.editComponentValue(componentValue);
+  }
   );
 
   context.subscriptions.push(
@@ -105,8 +111,11 @@ class CatCodingPanel {
     CatCodingPanel.currentPanel = new CatCodingPanel(panel, extensionPath);
   }
 
+  public static getPanel() { return CatCodingPanel.staticPanel };
+  static staticPanel: vscode.WebviewPanel;
   private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
     this._panel = panel;
+    CatCodingPanel.staticPanel = panel;
     this._extensionPath = extensionPath;
 
     // Set the webview's initial html content
@@ -350,3 +359,5 @@ class CatCodingPanel {
     }
   }
 }
+
+export default CatCodingPanel;

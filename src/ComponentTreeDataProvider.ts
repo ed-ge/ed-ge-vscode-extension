@@ -2,8 +2,28 @@ import * as vscode from 'vscode';
 import Dependency from "./Dependency"
 import ComponentValueDependency from './ComponentValueDependency';
 import ADependency from './ADependency';
+import CatCodingPanel from "./extension.js"
 
 export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  async editComponentValue(componentValue: any) {
+
+    const result = await vscode.window.showInputBox({
+      value: componentValue.value,
+      placeHolder: 'Edit the value of ' + componentValue.key,
+      validateInput: text => {
+        vscode.window.showInformationMessage(`Validating: ${text}`);
+        return text.trim() === '' ? 'The value cannot be blank!' : null;
+      }
+    });
+    vscode.window.showInformationMessage(`Edited the value of ${componentValue.key} to be: ${result}`);
+    CatCodingPanel.getPanel().webview.postMessage(
+      {
+        command: 'editComponentValue',
+        text: JSON.stringify({key:componentValue.key, value:result}),
+      }
+    );
+
+  }
 
   tree = new ADependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
   gameObject: any;
@@ -12,6 +32,8 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
 
   selectGameObject(gameObject: any): any {
     this.gameObject = gameObject;
+    CatCodingPanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
+    
     this._onDidChangeTreeData.fire();
   }
 
@@ -24,7 +46,7 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
   }
 
   getChildren(element?: Dependency): Thenable<Dependency[]> {
-    let toReturn =[];
+    let toReturn = [];
     if (!element && this.gameObject) {
       for (let i = 0; i < this.gameObject.nameable.components.length; i++) {
         let component = this.gameObject.nameable.components[i];

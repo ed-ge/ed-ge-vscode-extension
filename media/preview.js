@@ -20,7 +20,11 @@ class Preview {
     this.get();
   }
 
-
+  editComponentValue(str){
+    let delta = JSON.stringify(str);
+    let component = this.gameObject.find(i=>i.uuid==delta.uuid);
+    component[delta.key] = delta.value;
+  }
   get() {
     console.log("Getting");
     this.vscode = acquireVsCodeApi();
@@ -145,8 +149,23 @@ window.addEventListener('message', event => {
   const message = event.data; // The JSON data our extension sent
 
   switch (message.command) {
+    case 'selectScene':
+      app.scene = app.scenes.find(i => i.uuid == message.text)
+      break;
+    case 'selectGameObject':
+      app.gameObject = app.scene.findByUUID(message.text)
+      break;
+    case 'editComponentValue':
+      app.editComponentValue(message.text);
+      break;
     case 'allFiles':
       app.files = message.text;
+      break;
+    case 'editComponentValue':
+      let object = JSON.parse(message.text);
+      let key = object.key;
+      let value = object.value;
+      console.log(`Got ${key} and ${value}`);
       break;
     case 'deleteScene':
       app.scenes = app.scenes.filter(i => i.name != message.text);

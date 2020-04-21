@@ -3,11 +3,13 @@ import Dependency from "./Dependency"
 import ADependency from "./ADependency"
 import { ComponentTreeDataProvider } from './ComponentTreeDataProvider';
 import { SceneTreeDataProvider } from './SceneTreeDataProvider';
+import CatCodingPanel from './extension';
 
 export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
   
   selectScene(scene: any) {
     this.scene = scene;
+    CatCodingPanel.getPanel().webview.postMessage({ command: 'selectScene', text: scene.nameable.uuid });
     this._onDidChangeTreeData.fire();
 
   }
