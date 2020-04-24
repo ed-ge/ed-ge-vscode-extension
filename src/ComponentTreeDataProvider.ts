@@ -19,7 +19,7 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
     CatCodingPanel.getPanel().webview.postMessage(
       {
         command: 'editComponentValue',
-        text: JSON.stringify({key:componentValue.key, value:result}),
+        text: JSON.stringify({ key: componentValue.key, value: result, uuid: componentValue.component.nameable.uuid }),
       }
     );
 
@@ -33,7 +33,7 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
   selectGameObject(gameObject: any): any {
     this.gameObject = gameObject;
     CatCodingPanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
-    
+
     this._onDidChangeTreeData.fire();
   }
 
@@ -61,7 +61,8 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
     }
     else {
       for (let key in element.nameable) {
-        toReturn.push(new ComponentValueDependency(key, element.nameable[key]))
+        if (key != "uuid")
+          toReturn.push(new ComponentValueDependency(key, element.nameable[key], element))
       }
       return Promise.resolve(toReturn);
     }

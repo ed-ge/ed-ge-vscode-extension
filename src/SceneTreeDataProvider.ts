@@ -1,15 +1,12 @@
 import * as vscode from 'vscode';
 import ADependency from "./ADependency"
 import Dependency from "./Dependency"
-import { GameObjectTreeDataProvider } from './GameObjectTreeDataProvider';
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
 
-  
   tree = new ADependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
   info: any[] = [];
-  constructor() {
-  }
+  
 
   private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined> = new vscode.EventEmitter<Dependency | undefined>();
   readonly onDidChangeTreeData: vscode.Event<Dependency | undefined> = this._onDidChangeTreeData.event;

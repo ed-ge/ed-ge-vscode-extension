@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
 import Dependency from "./Dependency"
 import ADependency from "./ADependency"
-import { ComponentTreeDataProvider } from './ComponentTreeDataProvider';
-import { SceneTreeDataProvider } from './SceneTreeDataProvider';
 import CatCodingPanel from './extension';
 
 export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
@@ -18,17 +16,13 @@ export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Depen
   components: any;
   scene:any;
   
-  constructor() {
-  }
-
+  
   private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined> = new vscode.EventEmitter<Dependency | undefined>();
   readonly onDidChangeTreeData: vscode.Event<Dependency | undefined> = this._onDidChangeTreeData.event;
 
   getTreeItem(element: Dependency): vscode.TreeItem {
     return element;
   }
-
-
 
   refresh() {
     this._onDidChangeTreeData.fire();
@@ -55,9 +49,7 @@ export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Depen
         let hasChildren = child.children.length > 0;
         toReturn.push(new ADependency(child.name, "gameObject", child, hasChildren ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
       }
-    }
-
-    
+    }    
     return Promise.resolve(toReturn);
   }
 

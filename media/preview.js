@@ -21,8 +21,8 @@ class Preview {
   }
 
   editComponentValue(str){
-    let delta = JSON.stringify(str);
-    let component = this.gameObject.find(i=>i.uuid==delta.uuid);
+    let delta = JSON.parse(str);
+    let component = this.gameObject.components.find(i=>i.uuid==delta.uuid);
     component[delta.key] = delta.value;
   }
   get() {
