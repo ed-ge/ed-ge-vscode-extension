@@ -4,6 +4,25 @@ import ADependency from "./ADependency"
 import CatCodingPanel from './extension';
 
 export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+ 
+  async editGameObject(gameObject: any) {
+   
+      const result = await vscode.window.showInputBox({
+        value: gameObject.name,
+        placeHolder: 'Edit the name of  gameObject ' + gameObject.nameable.name,
+        
+      });
+      gameObject.nameable.name = result;
+      CatCodingPanel.getPanel().webview.postMessage(
+        {
+          command: 'editComponentValue',
+          text: JSON.stringify({ key: 'name', value: result, uuid: gameObject.nameable.uuid }),
+        }
+      );
+      this.refresh();
+  
+    
+  }
   
   selectScene(scene: any) {
     this.scene = scene;

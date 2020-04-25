@@ -36,6 +36,10 @@ export function activate(context: vscode.ExtensionContext) {
     gameObjectTreeDataProvider.selectScene(scene)
   );
 
+  vscode.commands.registerCommand("sceneTreeDataProvider.editScene", (scene) =>
+    sceneTreeDataProvider.editScene(scene)
+  );
+
   vscode.commands.registerCommand("gameObjectTreeDataProvider.selectGameObject", (gameObject) =>
     componentTreeDataProvider.selectGameObject(gameObject)
   );
@@ -43,6 +47,11 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("componentTreeDataProvider.editComponentValue", (componentValue) => {
     console.log(componentValue);
     componentTreeDataProvider.editComponentValue(componentValue);
+  }
+  );
+
+  vscode.commands.registerCommand("gameObjectTreeDataProvider.editGameObject", (gameObject) => {
+    gameObjectTreeDataProvider.editGameObject(gameObject);
   }
   );
 

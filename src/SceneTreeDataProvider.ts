@@ -1,8 +1,25 @@
 import * as vscode from 'vscode';
 import ADependency from "./ADependency"
 import Dependency from "./Dependency"
+import CatCodingPanel from './extension';
+
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  async editScene(scene: any) {
+    const result = await vscode.window.showInputBox({
+      value: scene.name,
+      placeHolder: 'Edit the name of  scene ' + scene.nameable.name,
+      
+    });
+    scene.nameable.name = result;
+    CatCodingPanel.getPanel().webview.postMessage(
+      {
+        command: 'editSceneName',
+        text: JSON.stringify({ name: result, uuid: scene.nameable.uuid }),
+      }
+    );
+    this.refresh();
+  }
 
   tree = new ADependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
   info: any[] = [];

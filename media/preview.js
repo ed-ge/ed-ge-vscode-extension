@@ -23,7 +23,7 @@ class Preview {
   editComponentValue(str) {
     let delta = JSON.parse(str);
     if (this.gameObject.uuid == delta.uuid)
-      this.gameObject[delta.key] = +delta.value
+      this.gameObject[delta.key] = delta.value
     else {
       let component = this.gameObject.components.find(i => i.uuid == delta.uuid);
       component[delta.key] = delta.value;
@@ -174,6 +174,11 @@ window.addEventListener('message', event => {
     //   break;
     case 'deleteScene':
       app.scenes = app.scenes.filter(i => i.name != message.text);
+      break;
+    case 'editSceneName':
+      let data = JSON.parse(message.text);
+      app.scenes.find(i=>i.uuid == data.uuid).name = data.name;
+      app.save();
       break;
     case 'newScene': //The user provided input for a new scene name
       let scene = new Base.Scene({ name: message.text }, Base.prefabs, Base.components, app.behaviors);
