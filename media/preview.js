@@ -20,10 +20,15 @@ class Preview {
     this.get();
   }
 
-  editComponentValue(str){
+  editComponentValue(str) {
     let delta = JSON.parse(str);
-    let component = this.gameObject.components.find(i=>i.uuid==delta.uuid);
-    component[delta.key] = delta.value;
+    if (this.gameObject.uuid == delta.uuid)
+      this.gameObject[delta.key] = +delta.value
+    else {
+      let component = this.gameObject.components.find(i => i.uuid == delta.uuid);
+      component[delta.key] = delta.value;
+    }
+    this.save();
   }
   get() {
     console.log("Getting");
@@ -161,12 +166,12 @@ window.addEventListener('message', event => {
     case 'allFiles':
       app.files = message.text;
       break;
-    case 'editComponentValue':
-      let object = JSON.parse(message.text);
-      let key = object.key;
-      let value = object.value;
-      console.log(`Got ${key} and ${value}`);
-      break;
+    // case 'editComponentValue':
+    //   let object = JSON.parse(message.text);
+    //   let key = object.key;
+    //   let value = object.value;
+    //   console.log(`Got ${key} and ${value}`);
+    //   break;
     case 'deleteScene':
       app.scenes = app.scenes.filter(i => i.name != message.text);
       break;

@@ -10,18 +10,20 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
     const result = await vscode.window.showInputBox({
       value: componentValue.value,
       placeHolder: 'Edit the value of ' + componentValue.key,
-      validateInput: text => {
-        vscode.window.showInformationMessage(`Validating: ${text}`);
-        return text.trim() === '' ? 'The value cannot be blank!' : null;
-      }
+      // validateInput: text => {
+      //   //vscode.window.showInformationMessage(`Validating: ${text}`);
+      //   return text.trim() === '' ? 'The value cannot be blank!' : null;
+      // }
     });
     vscode.window.showInformationMessage(`Edited the value of ${componentValue.key} to be: ${result}`);
+    componentValue.component.nameable[componentValue.key] = result;
     CatCodingPanel.getPanel().webview.postMessage(
       {
         command: 'editComponentValue',
         text: JSON.stringify({ key: componentValue.key, value: result, uuid: componentValue.component.nameable.uuid }),
       }
     );
+    this.refresh();
 
   }
 
@@ -48,6 +50,11 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
   getChildren(element?: Dependency): Thenable<Dependency[]> {
     let toReturn = [];
     if (!element && this.gameObject) {
+      toReturn.push(new ComponentValueDependency("x", this.gameObject.nameable.x, this.gameObject));
+      toReturn.push(new ComponentValueDependency("y", this.gameObject.nameable.y, this.gameObject));
+      toReturn.push(new ComponentValueDependency("scaleX", this.gameObject.nameable.scaleX, this.gameObject));
+      toReturn.push(new ComponentValueDependency("scaleY", this.gameObject.nameable.scaleY, this.gameObject));
+      toReturn.push(new ComponentValueDependency("rotation", this.gameObject.nameable.rotation, this.gameObject));
       for (let i = 0; i < this.gameObject.nameable.components.length; i++) {
         let component = this.gameObject.nameable.components[i];
         let objectComponent = this.gameObject.nameable.objectComponents[i];

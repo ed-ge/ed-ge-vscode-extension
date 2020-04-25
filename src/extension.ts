@@ -246,7 +246,7 @@ class CatCodingPanel {
               //let behaviors = import(behaviorPath);
 
               let info = JSON.parse(message.text);
-              CatCodingPanel.treeView.setInfo(info);
+              CatCodingPanel.treeView.setInfo(info.scenes.allScenes);
               let gameObjects = info.gameObjects;
               let gameBehaviors = info.gameBehaviors;
               let scenes = info.scenes;
@@ -330,7 +330,7 @@ class CatCodingPanel {
       value: '',
       placeHolder: 'Name of the new scene',
       validateInput: text => {
-        vscode.window.showInformationMessage(`Validating: ${text}`);
+        //vscode.window.showInformationMessage(`Validating: ${text}`);
         return text.trim() === '' ? 'The value cannot be blank!' : null;
       }
     });
