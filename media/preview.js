@@ -65,6 +65,7 @@ class Preview {
       console.log(scene.name)
       let sceneDef = {};
       sceneDef.name = scene.name;
+      sceneDef.uuid = scene.uuid;
       sceneDef.objects = [];
       for (let object of scene.children) {
         let def = {};
@@ -177,7 +178,11 @@ window.addEventListener('message', event => {
       break;
     case 'editSceneName':
       let data = JSON.parse(message.text);
-      app.scenes.find(i=>i.uuid == data.uuid).name = data.name;
+      let s = app.scenes.find(i=>i.uuid == data.uuid);
+      if(app.startScene == s.name)
+        app.startScene = data.name
+      s.name = data.name;
+
       app.save();
       break;
     case 'newScene': //The user provided input for a new scene name
