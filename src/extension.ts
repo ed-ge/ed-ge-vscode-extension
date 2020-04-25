@@ -49,6 +49,10 @@ export function activate(context: vscode.ExtensionContext) {
     componentTreeDataProvider.editComponentValue(componentValue);
   }
   );
+  vscode.commands.registerCommand("componentTreeDataProvider.addComponent", () => {
+    componentTreeDataProvider.addComponent();
+  }
+  );
 
   vscode.commands.registerCommand("gameObjectTreeDataProvider.editGameObject", (gameObject) => {
     gameObjectTreeDataProvider.editGameObject(gameObject);
@@ -76,12 +80,21 @@ export function activate(context: vscode.ExtensionContext) {
  * Manages cat coding webview panels
  */
 class CatCodingPanel {
+  static gameObject: any;
+  static selectGameObject(gameObject: any) {
+    CatCodingPanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
+    CatCodingPanel.gameObject = gameObject;
+  }
 	/**
 	 * Track the currently panel. Only allow a single panel to exist at a time.
 	 */
   public static currentPanel: CatCodingPanel | undefined;
 
   public static treeView: SceneTreeDataProvider;
+
+  public static Components: any[];
+
+  public static GameObjects: any[];
 
   public static readonly viewType = 'ed-ge';
 
@@ -155,6 +168,12 @@ class CatCodingPanel {
             break;
           case 'deleteScene':
             this.confirmDeleteScene(message.text)
+            break;
+          case 'Components':
+            CatCodingPanel.Components = JSON.parse(message.text);
+            break;
+          case 'GameObjets':
+            CatCodingPanel.GameObjects = JSON.parse(message.text);
             break;
           case 'getScenes':
             //console.log("Getting scenes");

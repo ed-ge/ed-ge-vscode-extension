@@ -5,6 +5,7 @@ import CatCodingPanel from './extension';
 
 export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
  
+ 
   async editGameObject(gameObject: any) {
    
       const result = await vscode.window.showInputBox({

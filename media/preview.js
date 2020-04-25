@@ -158,6 +158,10 @@ window.addEventListener('message', event => {
     case 'selectScene':
       app.scene = app.scenes.find(i => i.uuid == message.text)
       break;
+    case 'addComponent':
+      app.gameObject.addComponent(new Base.Components[JSON.parse(message.text).componentName])
+      app.save();
+      break;
     case 'selectGameObject':
       app.gameObject = app.scene.findByUUID(message.text)
       break;
@@ -212,7 +216,15 @@ window.addEventListener('message', event => {
           app.vscode.postMessage({
             command: "object",
             text: JSON.stringify(app.scenes, (name, value) => name == "gameObject" ? undefined : value)
-          })
+          });
+          app.vscode.postMessage({
+            command:"Components",
+            text:JSON.stringify(Object.keys(Base.Components))
+          });
+          app.vscode.postMessage({
+            command:"GameObjects",
+            text:JSON.stringify(Object.keys(Base.GameObjects))
+          });
 
         })
         .catch(err => {

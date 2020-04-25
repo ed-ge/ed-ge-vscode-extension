@@ -5,6 +5,19 @@ import ADependency from './ADependency';
 import CatCodingPanel from "./extension.js"
 
 export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  async addComponent() {
+    let ccp = CatCodingPanel.Components;
+    const result = await vscode.window.showQuickPick(CatCodingPanel.Components,{
+      placeHolder: "Pick a new component",
+    })
+    vscode.window.showInformationMessage(`Got: ${result}`);
+    CatCodingPanel.getPanel().webview.postMessage(
+      {
+        command: 'addComponent',
+        text: JSON.stringify({ componentName: result, uuid: CatCodingPanel.gameObject.nameable.uuid, component:result }),
+      }
+    );
+  }
   async editComponentValue(componentValue: any) {
 
     const result = await vscode.window.showInputBox({
@@ -34,8 +47,9 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
 
   selectGameObject(gameObject: any): any {
     this.gameObject = gameObject;
-    CatCodingPanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
-
+    
+    CatCodingPanel.selectGameObject(gameObject);
+    
     this._onDidChangeTreeData.fire();
   }
 
