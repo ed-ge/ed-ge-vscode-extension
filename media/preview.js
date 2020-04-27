@@ -31,7 +31,6 @@ class Preview {
     this.save();
   }
   get() {
-    console.log("Getting");
     this.vscode = acquireVsCodeApi();
     this.files = this.vscode.postMessage({
       command: 'getScenes',
@@ -150,6 +149,7 @@ let app = new Preview();
 
 
 
+
 window.addEventListener('message', event => {
 
   const message = event.data; // The JSON data our extension sent
@@ -159,7 +159,10 @@ window.addEventListener('message', event => {
       app.scene = app.scenes.find(i => i.uuid == message.text)
       break;
     case 'addComponent':
-      app.gameObject.addComponent(new Base.Components[JSON.parse(message.text).componentName])
+      let p = JSON.parse(message.text);
+      let n = p.componentName;
+      let c = new Base.Components[n]();
+      app.gameObject.addComponent(c)
       app.save();
       break;
     case 'selectGameObject':
@@ -182,8 +185,8 @@ window.addEventListener('message', event => {
       break;
     case 'editSceneName':
       let data = JSON.parse(message.text);
-      let s = app.scenes.find(i=>i.uuid == data.uuid);
-      if(app.startScene == s.name)
+      let s = app.scenes.find(i => i.uuid == data.uuid);
+      if (app.startScene == s.name)
         app.startScene = data.name
       s.name = data.name;
 
@@ -218,13 +221,14 @@ window.addEventListener('message', event => {
             text: JSON.stringify(app.scenes, (name, value) => name == "gameObject" ? undefined : value)
           });
           app.vscode.postMessage({
-            command:"Components",
-            text:JSON.stringify(Object.keys(Base.Components))
+            command: "Components",
+            text: JSON.stringify(Object.keys(Base.Components))
           });
-          app.vscode.postMessage({
-            command:"GameObjects",
-            text:JSON.stringify(Object.keys(Base.GameObjects))
-          });
+          if (Base.GameObjects)
+            app.vscode.postMessage({
+              command: "GameObjects",
+              text: JSON.stringify(Object.keys(Base.GameObjects))
+            });
 
         })
         .catch(err => {
