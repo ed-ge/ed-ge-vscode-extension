@@ -1,23 +1,14 @@
-
-
 class Preview {
-  scene = null;
-  gameObject = null;
-  rows = [];
-  vscode = {};
-  files = [];
-  scenes = [];
-  drawer = true;
-  on = true;
-  source = "https://github.com/ed-ge";
-  canv = {};
-  setup = false;
-  startScene = "";
-  behaviors = {};
-  //Base:Base,
+  vscode = {}; //References to the vscode "server"
 
+  startScene = ""; //Reference to the name of the current start scene
+  scene = null; //Reference to the currently selected scene
+  gameObject = null; //Reference to the currently selected game object
+  
+  behaviors = {}; //List of all the behaviors in the game
+  scenes = [];  //List of all scenes in the game
+  
   constructor() {
-    this.canv = document.getElementById("canv")
     this.get();
   }
 
@@ -36,7 +27,7 @@ class Preview {
     let that = this;
     window.addEventListener('message', event=>that.eventListener(event));
 
-    this.files = this.vscode.postMessage({
+    this.vscode.postMessage({
       command: 'getScenes',
       text: 'getScenes'
     })
@@ -94,7 +85,6 @@ class Preview {
           def.components.push(cdef);
         }
       }
-      //console.log(JSON.stringify(sceneDef, null, 2));
       toReturn.allScenes.push(sceneDef)
     }
 
@@ -123,18 +113,13 @@ class Preview {
 
   }
   selectScene(scene) {
-    console.log("Selecting scene " + name)
-    //this.vscode.postMessage({ command: 'selectScene', text: name })
     this.scene = scene;
   }
   selectObject(object) {
     this.gameObject = object;
   }
   addScene(obj) {
-    console.log(obj.GameObjects)
-    console.log(obj.GameBehaviors)
-    console.log(obj.Scenes)
-
+    
   }
 
   created() {
@@ -160,15 +145,8 @@ class Preview {
       case 'editComponentValue':
         this.editComponentValue(message.text);
         break;
-      case 'allFiles':
-        this.files = message.text;
-        break;
-      // case 'editComponentValue':
-      //   let object = JSON.parse(message.text);
-      //   let key = object.key;
-      //   let value = object.value;
-      //   console.log(`Got ${key} and ${value}`);
-      //   break;
+      
+      
       case 'deleteScene':
         this.scenes = this.scenes.filter(i => i.name != message.text);
         break;
@@ -204,8 +182,7 @@ class Preview {
             that.behaviors = module.GameBehaviors;
             that.startScene = module.Scenes.startScene;
             console.log(that.scenes);
-            that.setup = true;
-            that.deep
+            
             that.vscode.postMessage({
               command: "object",
               text: JSON.stringify(that.scenes, (name, value) => name == "gameObject" ? undefined : value)
@@ -224,27 +201,10 @@ class Preview {
           .catch(err => {
             console.log("Error " + err);
           })
-
-        //this.scenes = message.text;
         break;
       case 'sceneContents':
         console.log("Got scene contents");
-        // console.log(JSON.stringify(message.text, null, 2));
-        // var moduleData = message.text;
-        // var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
-        // import(b64moduleData)
-        //   .then(result => {
-        //     console.log(JSON.stringify(result, null, 2));
-        //     //this.scene = result;
-        //     //this.addScene(result)
-
-
-        //   })
-        //   .catch(err => {
-        //     console.log("Error " + err);
-        //   })
-
-
+        
         break;
     }
 
@@ -253,123 +213,3 @@ class Preview {
 };
 
 let app = new Preview();
-
-
-
-
-
-// window.addEventListener('message', event => {
-
-//   const message = event.data; // The JSON data our extension sent
-
-//   switch (message.command) {
-//     case 'selectScene':
-//       this.scene = this.scenes.find(i => i.uuid == message.text)
-//       break;
-//     case 'addComponent':
-//       let p = JSON.parse(message.text);
-//       let n = p.componentName;
-//       let c = new Base.Components[n]();
-//       this.gameObject.addComponent(c)
-//       this.save();
-//       break;
-//     case 'selectGameObject':
-//       this.gameObject = this.scene.findByUUID(message.text)
-//       break;
-//     case 'editComponentValue':
-//       this.editComponentValue(message.text);
-//       break;
-//     case 'allFiles':
-//       this.files = message.text;
-//       break;
-//     // case 'editComponentValue':
-//     //   let object = JSON.parse(message.text);
-//     //   let key = object.key;
-//     //   let value = object.value;
-//     //   console.log(`Got ${key} and ${value}`);
-//     //   break;
-//     case 'deleteScene':
-//       this.scenes = this.scenes.filter(i => i.name != message.text);
-//       break;
-//     case 'editSceneName':
-//       let data = JSON.parse(message.text);
-//       let s = this.scenes.find(i => i.uuid == data.uuid);
-//       if (this.startScene == s.name)
-//         this.startScene = data.name
-//       s.name = data.name;
-
-//       this.save();
-//       break;
-//     case 'newScene': //The user provided input for a new scene name
-//       let scene = new Base.Scene({ name: message.text }, Base.prefabs, Base.components, this.behaviors);
-//       scene.name = message.text;
-//       console.log("Created new scene" + "|" + message.text + "|")
-//       this.scenes.push(scene);
-//       break;
-//     case 'allScenes':
-//       console.log("Got scenes");
-
-//       var moduleData = message.text;
-//       var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
-//       import(b64moduleData)
-//         .then(module => {
-//           console.log("Got module")
-
-//           console.log(module.Scenes)
-//           this.scenes = module.Scenes.allScenes;
-//           Base.main(module.GameObjects, module.GameBehaviors, module.Scenes, false);
-//           this.scenes = Base.SceneManager.scenes;
-//           this.behaviors = module.GameBehaviors;
-//           this.startScene = module.Scenes.startScene;
-//           console.log(this.scenes);
-//           this.setup = true;
-//           this.deep
-//           this.vscode.postMessage({
-//             command: "object",
-//             text: JSON.stringify(this.scenes, (name, value) => name == "gameObject" ? undefined : value)
-//           });
-//           this.vscode.postMessage({
-//             command: "Components",
-//             text: JSON.stringify(Object.keys(Base.Components))
-//           });
-//           if (Base.GameObjects)
-//             this.vscode.postMessage({
-//               command: "GameObjects",
-//               text: JSON.stringify(Object.keys(Base.GameObjects))
-//             });
-
-//         })
-//         .catch(err => {
-//           console.log("Error " + err);
-//         })
-
-//       //this.scenes = message.text;
-//       break;
-//     case 'sceneContents':
-//       console.log("Got scene contents");
-//       // console.log(JSON.stringify(message.text, null, 2));
-//       // var moduleData = message.text;
-//       // var b64moduleData = "data:text/javascript;base64," + btoa(moduleData);
-//       // import(b64moduleData)
-//       //   .then(result => {
-//       //     console.log(JSON.stringify(result, null, 2));
-//       //     //this.scene = result;
-//       //     //this.addScene(result)
-
-
-//       //   })
-//       //   .catch(err => {
-//       //     console.log("Error " + err);
-//       //   })
-
-
-//       break;
-//   }
-
-// });
-
-
-
-
-
-
