@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
   let sceneTreeDataProvider = new SceneTreeDataProvider();
 
 
-  edGePanel.treeView = sceneTreeDataProvider;
+  EdGePanel.treeView = sceneTreeDataProvider;
   vscode.window.createTreeView('sceneTreeDataProvider', {
     treeDataProvider: sceneTreeDataProvider
   });
@@ -61,34 +61,34 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
-      edGePanel.createOrShow(context.extensionPath);
+      EdGePanel.createOrShow(context.extensionPath);
     })
   );
 
   if (vscode.window.registerWebviewPanelSerializer) {
     // Make sure we register a serializer in activation event
-    vscode.window.registerWebviewPanelSerializer(edGePanel.viewType, {
+    vscode.window.registerWebviewPanelSerializer(EdGePanel.viewType, {
       async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
         //console.log(`Got state: ${state}`);
-        edGePanel.revive(webviewPanel, context.extensionPath);
+        EdGePanel.revive(webviewPanel, context.extensionPath);
       }
     });
   }
 }
 
 /**
- * Manages cat coding webview panels
+ * Manages EdGePanel webview panels
  */
-class edGePanel {
+class EdGePanel {
   static gameObject: any;
   static selectGameObject(gameObject: any) {
-    edGePanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
-    edGePanel.gameObject = gameObject;
+    EdGePanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
+    EdGePanel.gameObject = gameObject;
   }
 	/**
 	 * Track the currently panel. Only allow a single panel to exist at a time.
 	 */
-  public static currentPanel: edGePanel | undefined;
+  public static currentPanel: EdGePanel | undefined;
 
   public static treeView: SceneTreeDataProvider;
 
@@ -108,14 +108,14 @@ class edGePanel {
       : undefined;
 
     // If we already have a panel, show it.
-    if (edGePanel.currentPanel) {
-      edGePanel.currentPanel._panel.reveal(column);
+    if (EdGePanel.currentPanel) {
+      EdGePanel.currentPanel._panel.reveal(column);
       return;
     }
     console.log(path.join(extensionPath, 'media'))
     // Otherwise, create a new panel.
     const panel = vscode.window.createWebviewPanel(
-      edGePanel.viewType,
+      EdGePanel.viewType,
       'ed-ge',
       column || vscode.ViewColumn.One,
       {
@@ -126,18 +126,18 @@ class edGePanel {
       }
     );
 
-    edGePanel.currentPanel = new edGePanel(panel, extensionPath);
+    EdGePanel.currentPanel = new EdGePanel(panel, extensionPath);
   }
 
   public static revive(panel: vscode.WebviewPanel, extensionPath: string) {
-    edGePanel.currentPanel = new edGePanel(panel, extensionPath);
+    EdGePanel.currentPanel = new EdGePanel(panel, extensionPath);
   }
 
-  public static getPanel() { return edGePanel.staticPanel };
+  public static getPanel() { return EdGePanel.staticPanel };
   static staticPanel: vscode.WebviewPanel;
   private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
     this._panel = panel;
-    edGePanel.staticPanel = panel;
+    EdGePanel.staticPanel = panel;
     this._extensionPath = extensionPath;
 
     // Set the webview's initial html content
@@ -170,10 +170,10 @@ class edGePanel {
             this.confirmDeleteScene(message.text)
             break;
           case 'Components':
-            edGePanel.Components = JSON.parse(message.text);
+            EdGePanel.Components = JSON.parse(message.text);
             break;
           case 'GameObjets':
-            edGePanel.GameObjects = JSON.parse(message.text);
+            EdGePanel.GameObjects = JSON.parse(message.text);
             break;
           case 'getScenes':
             //console.log("Getting scenes");
@@ -264,7 +264,7 @@ class edGePanel {
             console.log("Got Object")
             let o = JSON.parse(message.text);
             //console.log(message.text);
-            edGePanel.treeView.setInfo(o);
+            EdGePanel.treeView.setInfo(o);
             return;
           case 'createFile':
             console.log("Got createFile")
@@ -274,7 +274,7 @@ class edGePanel {
               //let behaviors = import(behaviorPath);
 
               let info = JSON.parse(message.text);
-              edGePanel.treeView.setInfo(info.scenes.allScenes);
+              EdGePanel.treeView.setInfo(info.scenes.allScenes);
               let gameObjects = info.gameObjects;
               let gameBehaviors = info.gameBehaviors;
               let scenes = info.scenes;
@@ -317,7 +317,7 @@ class edGePanel {
   }
 
   public dispose() {
-    edGePanel.currentPanel = undefined;
+    EdGePanel.currentPanel = undefined;
 
     // Clean up our resources
     this._panel.dispose();
@@ -388,4 +388,4 @@ class edGePanel {
   }
 }
 
-export default edGePanel;
+export default EdGePanel;

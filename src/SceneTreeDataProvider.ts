@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import ADependency from "./ADependency"
 import Dependency from "./Dependency"
-import CatCodingPanel from './extension';
+import EdGePanel from './EdGePanel';
 
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
@@ -12,7 +12,7 @@ export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency
       
     });
     scene.nameable.name = result;
-    CatCodingPanel.getPanel().webview.postMessage(
+    EdGePanel.getPanel().webview.postMessage(
       {
         command: 'editSceneName',
         text: JSON.stringify({ name: result, uuid: scene.nameable.uuid }),

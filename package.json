@@ -24,7 +24,7 @@
     "onWebviewPanel:ed-ge",
     "onCommand:ed-ge.start"
   ],
-  "main": "./out/extension",
+  "main": "./out/EdGePanel",
   "contributes": {
     "commands": [
       {

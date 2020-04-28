@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import Dependency from "./Dependency"
 import ADependency from "./ADependency"
-import CatCodingPanel from './extension';
+import EdGePanel from './EdGePanel';
 
 export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
  
@@ -14,7 +14,7 @@ export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Depen
         
       });
       gameObject.nameable.name = result;
-      CatCodingPanel.getPanel().webview.postMessage(
+      EdGePanel.getPanel().webview.postMessage(
         {
           command: 'editComponentValue',
           text: JSON.stringify({ key: 'name', value: result, uuid: gameObject.nameable.uuid }),
@@ -27,7 +27,7 @@ export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Depen
   
   selectScene(scene: any) {
     this.scene = scene;
-    CatCodingPanel.getPanel().webview.postMessage({ command: 'selectScene', text: scene.nameable.uuid });
+    EdGePanel.getPanel().webview.postMessage({ command: 'selectScene', text: scene.nameable.uuid });
     this._onDidChangeTreeData.fire();
 
   }

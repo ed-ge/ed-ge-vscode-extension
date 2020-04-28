@@ -2,22 +2,26 @@ import * as vscode from 'vscode';
 import Dependency from "./Dependency"
 import ComponentValueDependency from './ComponentValueDependency';
 import ADependency from './ADependency';
-import CatCodingPanel from "./extension.js"
+import EdGePanel from "./EdGePanel.js"
 
 export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  
   async addComponent() {
-    let ccp = CatCodingPanel.Components;
-    const result = await vscode.window.showQuickPick(CatCodingPanel.Components,{
+    
+    const result = await vscode.window.showQuickPick(EdGePanel.Components,{
       placeHolder: "Pick a new component",
     })
+
     vscode.window.showInformationMessage(`Got: ${result}`);
-    CatCodingPanel.getPanel().webview.postMessage(
+
+    EdGePanel.getPanel().webview.postMessage(
       {
         command: 'addComponent',
-        text: JSON.stringify({ componentName: result, uuid: CatCodingPanel.gameObject.nameable.uuid, component:result }),
+        text: JSON.stringify({ componentName: result, uuid: EdGePanel.gameObject.nameable.uuid, component:result }),
       }
     );
   }
+
   async editComponentValue(componentValue: any) {
 
     const result = await vscode.window.showInputBox({
@@ -30,7 +34,7 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
     });
     vscode.window.showInformationMessage(`Edited the value of ${componentValue.key} to be: ${result}`);
     componentValue.component.nameable[componentValue.key] = result;
-    CatCodingPanel.getPanel().webview.postMessage(
+    EdGePanel.getPanel().webview.postMessage(
       {
         command: 'editComponentValue',
         text: JSON.stringify({ key: componentValue.key, value: result, uuid: componentValue.component.nameable.uuid }),
@@ -48,7 +52,7 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
   selectGameObject(gameObject: any): any {
     this.gameObject = gameObject;
     
-    CatCodingPanel.selectGameObject(gameObject);
+    EdGePanel.selectGameObject(gameObject);
     
     this._onDidChangeTreeData.fire();
   }
