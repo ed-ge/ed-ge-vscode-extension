@@ -32,29 +32,7 @@ class Preview {
     })
   }
 
-  /**
-   * Respond to a request editing a component
-   * @param {String} str JSON formatted object with three values
-   * 1) the uuid of the currently selected object (if editing the transform)
-   * or the uuid of the component on the currently selceted object
-   * 2) the key of the component being edited
-   * 3) the new value to be assigned to that component's key
-   */
-  editComponentValue(str) {
-    let delta = JSON.parse(str);
-
-    //If the uuid matches the game object, then we are changing
-    //a value on the trasnform
-    if (this.gameObject.uuid == delta.uuid)
-      this.gameObject[delta.key] = delta.value
-    //Otherwise we are changing a value on the component
-    else {
-      let component = this.gameObject.components.find(i => i.uuid == delta.uuid);
-      component[delta.key] = delta.value;
-    }
-    //Automatically save the changes to disk
-    this.save();
-  }
+  
 
   //Right now we don't rely on prefabs when saving changes
   serializeGameObjects() {
@@ -185,6 +163,29 @@ class Preview {
     this.gameObject.addComponent(c)
     this.save();
   }
+  /**
+   * Respond to a request editing a component
+   * @param {String} str JSON formatted object with three values
+   * 1) the uuid of the currently selected object (if editing the transform)
+   * or the uuid of the component on the currently selceted object
+   * 2) the key of the component being edited
+   * 3) the new value to be assigned to that component's key
+   */
+  editComponentValue(str) {
+    let delta = JSON.parse(str);
+
+    //If the uuid matches the game object, then we are changing
+    //a value on the trasnform
+    if (this.gameObject.uuid == delta.uuid)
+      this.gameObject[delta.key] = delta.value
+    //Otherwise we are changing a value on the component
+    else {
+      let component = this.gameObject.components.find(i => i.uuid == delta.uuid);
+      component[delta.key] = delta.value;
+    }
+    //Automatically save the changes to disk
+    this.save();
+  }
   selectGameObject(str) {
     this.gameObject = this.scene.findByUUID(str);
   }
@@ -228,29 +229,15 @@ class Preview {
     const message = event.data; // The JSON data our extension sent
 
     switch (message.command) {
-      case 'selectScene':
-        this.selectScene(message.text)
-        break;
-      case 'addComponent':
-        this.addComponent(message.text)
-        break;
-      case 'selectGameObject':
-        this.selectGameObject(message.text);
-        break;
-      case 'editComponentValue':
-        this.editComponentValue(message.text);
-        break;
-      case 'deleteScene':
-        this.deleteScene(message.text);
-        break;
-      case 'editSceneName':
-        this.editSceneName(message.text)
-        break;
-      case 'newScene': //The user provided input for a new scene name
-        this.newScene(message.text)
-      case 'allScenes':
-        this.allScenes(message.text);
-        break;
+      case 'selectScene': return this.selectScene(message.text)
+      case 'selectGameObject': return this.selectGameObject(message.text);
+      case 'addComponent': return this.addComponent(message.text)
+      case 'editComponentValue': return this.editComponentValue(message.text);
+      case 'editSceneName': return this.editSceneName(message.text)
+      case 'deleteScene': return this.deleteScene(message.text);
+      case 'newScene': return this.newScene(message.text)
+      case 'allScenes': return this.allScenes(message.text);
+      default: return console.error("Unknown message " + message.command);
     }
   }
 };
