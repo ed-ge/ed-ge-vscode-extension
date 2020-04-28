@@ -16,6 +16,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 
   EdGePanel.treeView = sceneTreeDataProvider;
+
+  //Create the three treeDataProviders
   vscode.window.createTreeView('sceneTreeDataProvider', {
     treeDataProvider: sceneTreeDataProvider
   });
@@ -28,6 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
     treeDataProvider: componentTreeDataProvider
   });
 
+  //Add the commands for the sceneTreeDataProvider
   vscode.commands.registerCommand('sceneTreeDataProvider.refreshEntry', () =>
     sceneTreeDataProvider.refresh()
   );
@@ -40,10 +43,17 @@ export function activate(context: vscode.ExtensionContext) {
     sceneTreeDataProvider.editScene(scene)
   );
 
+  //Add the commands for the gameTreeDataProvider
   vscode.commands.registerCommand("gameObjectTreeDataProvider.selectGameObject", (gameObject) =>
     componentTreeDataProvider.selectGameObject(gameObject)
   );
 
+  vscode.commands.registerCommand("gameObjectTreeDataProvider.editGameObject", (gameObject) => {
+    gameObjectTreeDataProvider.editGameObject(gameObject);
+  }
+  );
+
+  //Add the commansd for the componentTreeDataProvider
   vscode.commands.registerCommand("componentTreeDataProvider.editComponentValue", (componentValue) => {
     console.log(componentValue);
     componentTreeDataProvider.editComponentValue(componentValue);
@@ -51,11 +61,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
   vscode.commands.registerCommand("componentTreeDataProvider.addComponent", () => {
     componentTreeDataProvider.addComponent();
-  }
-  );
-
-  vscode.commands.registerCommand("gameObjectTreeDataProvider.editGameObject", (gameObject) => {
-    gameObjectTreeDataProvider.editGameObject(gameObject);
   }
   );
 
@@ -69,7 +74,6 @@ export function activate(context: vscode.ExtensionContext) {
     // Make sure we register a serializer in activation event
     vscode.window.registerWebviewPanelSerializer(EdGePanel.viewType, {
       async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
-        //console.log(`Got state: ${state}`);
         EdGePanel.revive(webviewPanel, context.extensionPath);
       }
     });
@@ -80,24 +84,36 @@ export function activate(context: vscode.ExtensionContext) {
  * Manages EdGePanel webview panels
  */
 class EdGePanel {
-  static gameObject: any;
+  static gameObject: any; //Currently selected game object
+
+  /**
+   * Select a game object
+   * Updates the panel and sends a message to the webview
+   * @param gameObject The gameObject to select
+   */
   static selectGameObject(gameObject: any) {
     EdGePanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
     EdGePanel.gameObject = gameObject;
   }
+
 	/**
 	 * Track the currently panel. Only allow a single panel to exist at a time.
 	 */
   public static currentPanel: EdGePanel | undefined;
 
+  /** Reference to the current Scene Tree  */
   public static treeView: SceneTreeDataProvider;
 
+  /** Reference to all possible components */
   public static Components: any[];
 
+  /** Reference to all possible game objects */
   public static GameObjects: any[];
 
+  /** Name of the panel */
   public static readonly viewType = 'ed-ge';
 
+  /** Boilerplate */
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionPath: string;
   private _disposables: vscode.Disposable[] = [];
@@ -112,8 +128,7 @@ class EdGePanel {
       EdGePanel.currentPanel._panel.reveal(column);
       return;
     }
-    console.log(path.join(extensionPath, 'media'))
-    // Otherwise, create a new panel.
+
     const panel = vscode.window.createWebviewPanel(
       EdGePanel.viewType,
       'ed-ge',
@@ -121,8 +136,8 @@ class EdGePanel {
       {
         // Enable javascript in the webview
         enableScripts: true,
+        //Don't shut down in the background
         retainContextWhenHidden: true,
-
       }
     );
 
@@ -163,12 +178,6 @@ class EdGePanel {
       (message: any) => {
         let files;
         switch (message.command) {
-          case 'newScene':
-            this.inputBoxSceneName();
-            break;
-          case 'deleteScene':
-            this.confirmDeleteScene(message.text)
-            break;
           case 'Components':
             EdGePanel.Components = JSON.parse(message.text);
             break;
@@ -176,15 +185,7 @@ class EdGePanel {
             EdGePanel.GameObjects = JSON.parse(message.text);
             break;
           case 'getScenes':
-            //console.log("Getting scenes");
             if (vscode.workspace.workspaceFolders) {
-              //console.log(vscode.workspace.workspaceFolders[0].uri.fsPath)
-              //let GameBehaviorFileContents = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'GameBehaviors.js'), 'ascii');
-
-              //console.log(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js'))
-
-              //Do some conversion to deal with the external behavior files
-
               const inputOptions = {
                 input: path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'save.js')
               };
@@ -199,52 +200,12 @@ class EdGePanel {
                 // create a bundle
                 const bundle = await rollup.rollup(inputOptions);
 
-                //console.log(bundle.watchFiles); // an array of file names this bundle depends on
-
-                // generate output specific code in-memory
-                // you can call this function multiple times on the same bundle object
                 const { output } = await bundle.generate(outputOptions);
 
-                for (const chunkOrAsset of output) {
-                  if (chunkOrAsset.type === 'asset') {
-                    // For assets, this contains
-                    // {
-                    //   fileName: string,              // the asset file name
-                    //   source: string | Uint8Array    // the asset source
-                    //   type: 'asset'                  // signifies that this is an asset
-                    // }
-                    //console.log('Asset', chunkOrAsset);
-                  } else {
-                    // For chunks, this contains
-                    // {
-                    //   code: string,                  // the generated JS code
-                    //   dynamicImports: string[],      // external modules imported dynamically by the chunk
-                    //   exports: string[],             // exported variable names
-                    //   facadeModuleId: string | null, // the id of a module that this chunk corresponds to
-                    //   fileName: string,              // the chunk file name
-                    //   imports: string[],             // external modules imported statically by the chunk
-                    //   isDynamicEntry: boolean,       // is this chunk a dynamic entry point
-                    //   isEntry: boolean,              // is this chunk a static entry point
-                    //   map: string | null,            // sourcemaps if present
-                    //   modules: {                     // information about the modules in this chunk
-                    //     [id: string]: {
-                    //       renderedExports: string[]; // exported variable names that were included
-                    //       removedExports: string[];  // exported variable names that were removed
-                    //       renderedLength: number;    // the length of the remaining code in this module
-                    //       originalLength: number;    // the original length of the code in this module
-                    //     };
-                    //   },
-                    //   name: string                   // the name of this chunk as used in naming patterns
-                    //   type: 'chunk',                 // signifies that this is a chunk
-                    // }
-                    //console.log('Chunk', chunkOrAsset.modules);
-                  }
-                }
                 await bundle.write(outputOptions);
-                //console.log("Done writing file");
+
                 if (vscode.workspace.workspaceFolders) {
                   let file = fs.readFileSync(path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, 'rollup.js'), 'ascii');
-                  //console.log(file);
 
                   self._panel.webview.postMessage(
                     {
@@ -253,17 +214,13 @@ class EdGePanel {
                     }
                   );
                 }
-
-
               }
               build();
-
             }
             return;
           case 'object':
             console.log("Got Object")
             let o = JSON.parse(message.text);
-            //console.log(message.text);
             EdGePanel.treeView.setInfo(o);
             return;
           case 'createFile':
@@ -279,41 +236,21 @@ class EdGePanel {
               let gameBehaviors = info.gameBehaviors;
               let scenes = info.scenes;
 
-              let file = "";
-
-              file += `import GameBehaviors from './GameBehaviors.js';\n`
-
-              file += "let GameObjects = ";
-              file += JSON.stringify(gameObjects, null, 2);
-              file += '\n';
-
-              // file += "let GameBehaviors = ";
-              // file += JSON.stringify(gameBehaviors, null, 2);
-              // file += '\n';
-
-              file += "let Scenes = ";
-              file += JSON.stringify(scenes, null, 2);
-              file += '\n';
-
-              file += '\n';
-              file += `export {GameObjects, GameBehaviors, Scenes}`;
+              let file= 
+`import GameBehaviors from './GameBehaviors.js'
+let GameObjects = ${JSON.stringify(gameObjects, null, 2)}
+let Scenes = ${JSON.stringify(scenes, null, 2)}
+ 
+export {GameObjects, GameBehaviors, Scenes}`;
 
               fs.writeFileSync(basePath, file);
               fs.writeFileSync(behaviorPath, gameBehaviors);
-              console.log("Wrote file");
-              //console.log(file);
             }
         }
       },
       null,
       this._disposables
     );
-  }
-
-  public doRefactor() {
-    // Send a message to the webview webview.
-    // You can send any JSON serializable data.
-    this._panel.webview.postMessage({ command: 'refactor' });
   }
 
   public dispose() {
