@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
   let sceneTreeDataProvider = new SceneTreeDataProvider();
 
 
-  CatCodingPanel.treeView = sceneTreeDataProvider;
+  edGePanel.treeView = sceneTreeDataProvider;
   vscode.window.createTreeView('sceneTreeDataProvider', {
     treeDataProvider: sceneTreeDataProvider
   });
@@ -61,16 +61,16 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
-      CatCodingPanel.createOrShow(context.extensionPath);
+      edGePanel.createOrShow(context.extensionPath);
     })
   );
 
   if (vscode.window.registerWebviewPanelSerializer) {
     // Make sure we register a serializer in activation event
-    vscode.window.registerWebviewPanelSerializer(CatCodingPanel.viewType, {
+    vscode.window.registerWebviewPanelSerializer(edGePanel.viewType, {
       async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: any) {
         //console.log(`Got state: ${state}`);
-        CatCodingPanel.revive(webviewPanel, context.extensionPath);
+        edGePanel.revive(webviewPanel, context.extensionPath);
       }
     });
   }
@@ -79,16 +79,16 @@ export function activate(context: vscode.ExtensionContext) {
 /**
  * Manages cat coding webview panels
  */
-class CatCodingPanel {
+class edGePanel {
   static gameObject: any;
   static selectGameObject(gameObject: any) {
-    CatCodingPanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
-    CatCodingPanel.gameObject = gameObject;
+    edGePanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
+    edGePanel.gameObject = gameObject;
   }
 	/**
 	 * Track the currently panel. Only allow a single panel to exist at a time.
 	 */
-  public static currentPanel: CatCodingPanel | undefined;
+  public static currentPanel: edGePanel | undefined;
 
   public static treeView: SceneTreeDataProvider;
 
@@ -108,14 +108,14 @@ class CatCodingPanel {
       : undefined;
 
     // If we already have a panel, show it.
-    if (CatCodingPanel.currentPanel) {
-      CatCodingPanel.currentPanel._panel.reveal(column);
+    if (edGePanel.currentPanel) {
+      edGePanel.currentPanel._panel.reveal(column);
       return;
     }
     console.log(path.join(extensionPath, 'media'))
     // Otherwise, create a new panel.
     const panel = vscode.window.createWebviewPanel(
-      CatCodingPanel.viewType,
+      edGePanel.viewType,
       'ed-ge',
       column || vscode.ViewColumn.One,
       {
@@ -126,18 +126,18 @@ class CatCodingPanel {
       }
     );
 
-    CatCodingPanel.currentPanel = new CatCodingPanel(panel, extensionPath);
+    edGePanel.currentPanel = new edGePanel(panel, extensionPath);
   }
 
   public static revive(panel: vscode.WebviewPanel, extensionPath: string) {
-    CatCodingPanel.currentPanel = new CatCodingPanel(panel, extensionPath);
+    edGePanel.currentPanel = new edGePanel(panel, extensionPath);
   }
 
-  public static getPanel() { return CatCodingPanel.staticPanel };
+  public static getPanel() { return edGePanel.staticPanel };
   static staticPanel: vscode.WebviewPanel;
   private constructor(panel: vscode.WebviewPanel, extensionPath: string) {
     this._panel = panel;
-    CatCodingPanel.staticPanel = panel;
+    edGePanel.staticPanel = panel;
     this._extensionPath = extensionPath;
 
     // Set the webview's initial html content
@@ -170,10 +170,10 @@ class CatCodingPanel {
             this.confirmDeleteScene(message.text)
             break;
           case 'Components':
-            CatCodingPanel.Components = JSON.parse(message.text);
+            edGePanel.Components = JSON.parse(message.text);
             break;
           case 'GameObjets':
-            CatCodingPanel.GameObjects = JSON.parse(message.text);
+            edGePanel.GameObjects = JSON.parse(message.text);
             break;
           case 'getScenes':
             //console.log("Getting scenes");
@@ -264,7 +264,7 @@ class CatCodingPanel {
             console.log("Got Object")
             let o = JSON.parse(message.text);
             //console.log(message.text);
-            CatCodingPanel.treeView.setInfo(o);
+            edGePanel.treeView.setInfo(o);
             return;
           case 'createFile':
             console.log("Got createFile")
@@ -274,7 +274,7 @@ class CatCodingPanel {
               //let behaviors = import(behaviorPath);
 
               let info = JSON.parse(message.text);
-              CatCodingPanel.treeView.setInfo(info.scenes.allScenes);
+              edGePanel.treeView.setInfo(info.scenes.allScenes);
               let gameObjects = info.gameObjects;
               let gameBehaviors = info.gameBehaviors;
               let scenes = info.scenes;
@@ -317,7 +317,7 @@ class CatCodingPanel {
   }
 
   public dispose() {
-    CatCodingPanel.currentPanel = undefined;
+    edGePanel.currentPanel = undefined;
 
     // Clean up our resources
     this._panel.dispose();
@@ -388,4 +388,4 @@ class CatCodingPanel {
   }
 }
 
-export default CatCodingPanel;
+export default edGePanel;

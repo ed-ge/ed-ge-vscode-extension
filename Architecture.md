@@ -34,7 +34,7 @@ It then sends the contents of rollup.js back to preview.js with an 'allScenes' m
 
   - extension.ts switches on 'object'. It calls setInfo on the static CatCodingPanel treeView setInfo reference.
 
-  - SceneTreeDataProvider sets its info to the scese data. It calls its internal refresh function
+  - SceneTreeDataProvider sets its info to the scene data. It calls its internal refresh function
 
   - SceneTreeDataProvider refreshes and getChildren is called with a null argument. It returns an array of thenable references to each scene
 
