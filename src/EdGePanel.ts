@@ -25,21 +25,25 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.window.createTreeView('componentTreeDataProvider', {treeDataProvider: componentTreeDataProvider});
 
   //Add the commands for the sceneTreeDataProvider
-  vscode.commands.registerCommand('refreshEntry', () =>sceneTreeDataProvider.refresh());
-
-  vscode.commands.registerCommand("selectScene", (scene) =>gameObjectTreeDataProvider.selectScene(scene));
-
+  vscode.commands.registerCommand('addScene', () =>sceneTreeDataProvider.addScene());
   vscode.commands.registerCommand("editScene", (scene) =>sceneTreeDataProvider.editScene(scene));
-
-  //Add the commands for the gameTreeDataProvider
-  vscode.commands.registerCommand("selectGameObject", (gameObject) =>componentTreeDataProvider.selectGameObject(gameObject));
+  vscode.commands.registerCommand("deleteScene", (scene) =>sceneTreeDataProvider.deleteScene(scene));
+  // vscode.commands.registerCommand('refreshEntry', () =>sceneTreeDataProvider.refresh());
 
   vscode.commands.registerCommand("editGameObject", (gameObject) =>gameObjectTreeDataProvider.editGameObject(gameObject));
+  vscode.commands.registerCommand("deleteGameObject", (gameObject) =>gameObjectTreeDataProvider.deleteGameObject(gameObject));
+  
+  vscode.commands.registerCommand("addComponent", () => componentTreeDataProvider.addComponent());
+  vscode.commands.registerCommand("deleteComponent", (component) => componentTreeDataProvider.deleteComponent(component));
+  vscode.commands.registerCommand("editComponentValue", (componentValue) => componentTreeDataProvider.editComponentValue(componentValue));
+  
+  //Add the commands for the gameTreeDataProvider
+  vscode.commands.registerCommand("selectScene", (scene) =>gameObjectTreeDataProvider.selectScene(scene));
+  vscode.commands.registerCommand("selectGameObject", (gameObject) =>componentTreeDataProvider.selectGameObject(gameObject));
+
 
   //Add the commansd for the componentTreeDataProvider
-  vscode.commands.registerCommand("editComponentValue", (componentValue) => componentTreeDataProvider.editComponentValue(componentValue));
  
-  vscode.commands.registerCommand("addComponent", () => componentTreeDataProvider.addComponent());
 
   context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
