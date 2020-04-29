@@ -25,7 +25,7 @@ This is how things go on the initial boot:
 
 -preview.get sets the vscode member variable and posts message 'getScenes' to the vscode extension.
 
-- extension.ts (178) switches on 'getScenes' and setsup a code-based rollup. It writes the rollup to rollup.js. It turns around and reads rollup.js as a text file.
+- extension.ts (178) switches on 'getScenes' and sets up a code-based rollup. It writes the rollup to rollup.js. It turns around and reads rollup.js as a text file.
 It then sends the contents of rollup.js back to preview.js with an 'allScenes' message.
 
 - preview.js (201) switches on 'allScenes'. It imports the rollup text as a base64-encoded module. It extracts the last of scenes as a member variable (app.scenes). In calls Base.main to start te game with updating turned off.

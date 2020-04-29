@@ -190,7 +190,9 @@ class Preview {
     this.gameObject = this.scene.findByUUID(str);
   }
   deleteScene(str) {
-    this.scenes = this.scenes.filter(i => i.name != str);
+    let uuid = JSON.parse(str)
+    this.scenes = this.scenes.filter(i => i.uuid != uuid);
+    this.save();
   }
   editScene(str) {
     let data = JSON.parse(str);

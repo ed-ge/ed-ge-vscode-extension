@@ -5,8 +5,18 @@ import EdGePanel from './EdGePanel';
 
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
-  deleteScene(scene: any) {
-    throw new Error("Method not implemented.");
+  async deleteScene(scene: any) {
+    const result = await vscode.window.showQuickPick(['OK', 'Cancel'], {
+      placeHolder: 'Do you want to delete the scene' + scene.name,
+    });
+    if (result === "OK") {
+      EdGePanel.getPanel().webview.postMessage(
+        {
+          command: 'deleteScene',
+          text: JSON.stringify(scene.nameable.uuid),
+        }
+      );
+    }
   }
   async addScene() {
     const result = await vscode.window.showInputBox({
