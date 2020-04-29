@@ -5,6 +5,12 @@ import EdGePanel from './EdGePanel';
 
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  deleteScene(scene: any): any {
+    throw new Error("Method not implemented.");
+  }
+  addScene(): any {
+    throw new Error("Method not implemented.");
+  }
   async editScene(scene: any) {
     const result = await vscode.window.showInputBox({
       value: scene.name,
@@ -14,7 +20,7 @@ export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency
     scene.nameable.name = result;
     EdGePanel.getPanel().webview.postMessage(
       {
-        command: 'editSceneName',
+        command: 'editScene',
         text: JSON.stringify({ name: result, uuid: scene.nameable.uuid }),
       }
     );

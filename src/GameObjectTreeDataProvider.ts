@@ -4,6 +4,12 @@ import ADependency from "./ADependency"
 import EdGePanel from './EdGePanel';
 
 export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  deleteGameObject(gameObject: any): any {
+    throw new Error("Method not implemented.");
+  }
+  addGameObject(): any {
+    throw new Error("Method not implemented.");
+  }
  
  
   async editGameObject(gameObject: any) {

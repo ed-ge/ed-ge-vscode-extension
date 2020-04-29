@@ -5,6 +5,9 @@ import ADependency from './ADependency';
 import EdGePanel from "./EdGePanel.js"
 
 export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  deleteComponent(component: any): any {
+    throw new Error("Method not implemented.");
+  }
   
   async addComponent() {
     

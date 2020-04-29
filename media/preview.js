@@ -192,7 +192,7 @@ class Preview {
   deleteScene(str) {
     this.scenes = this.scenes.filter(i => i.name != str);
   }
-  editSceneName(str) {
+  editScene(str) {
     let data = JSON.parse(str);
     let s = this.scenes.find(i => i.uuid == data.uuid);
     if (this.startScene == s.name)
@@ -201,7 +201,7 @@ class Preview {
 
     this.save();
   }
-  newScene(str) {
+  addScene(str) {
     let scene = new Base.Scene({ name: str }, Base.prefabs, Base.components, this.behaviors);
     scene.name = str;
     console.log("Created new scene" + "|" + str + "|")
@@ -229,14 +229,23 @@ class Preview {
     const message = event.data; // The JSON data our extension sent
 
     switch (message.command) {
+      case 'allScenes': return this.allScenes(message.text);
+
+      case 'addScene': return this.addScene(message.text)
+      case 'editScene': return this.editScene(message.text)
+      case 'deleteScene': return this.deleteScene(message.text);
+
+      case 'addGameObject': return;
+      case 'editGameObject': return;
+      case 'deleteGameObject': return;
+
+      case 'addComponent': return this.addComponent(message.text)
+      case 'deleteComponent': return ;
+      case 'editComponentValue': return this.editComponentValue(message.text);
+
       case 'selectScene': return this.selectScene(message.text)
       case 'selectGameObject': return this.selectGameObject(message.text);
-      case 'addComponent': return this.addComponent(message.text)
-      case 'editComponentValue': return this.editComponentValue(message.text);
-      case 'editSceneName': return this.editSceneName(message.text)
-      case 'deleteScene': return this.deleteScene(message.text);
-      case 'newScene': return this.newScene(message.text)
-      case 'allScenes': return this.allScenes(message.text);
+      
       default: return console.error("Unknown message " + message.command);
     }
   }

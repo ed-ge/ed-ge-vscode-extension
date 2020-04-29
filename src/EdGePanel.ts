@@ -30,6 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("deleteScene", (scene) =>sceneTreeDataProvider.deleteScene(scene));
   // vscode.commands.registerCommand('refreshEntry', () =>sceneTreeDataProvider.refresh());
 
+  vscode.commands.registerCommand("addGameObject", () =>gameObjectTreeDataProvider.addGameObject());
   vscode.commands.registerCommand("editGameObject", (gameObject) =>gameObjectTreeDataProvider.editGameObject(gameObject));
   vscode.commands.registerCommand("deleteGameObject", (gameObject) =>gameObjectTreeDataProvider.deleteGameObject(gameObject));
   
@@ -283,7 +284,7 @@ export {GameObjects, GameBehaviors, Scenes}`;
     vscode.window.showInformationMessage(`Creating new scene: ${result}`);
     this._panel.webview.postMessage(
       {
-        command: 'newScene',
+        command: 'addScene',
         text: result,
       }
     );
