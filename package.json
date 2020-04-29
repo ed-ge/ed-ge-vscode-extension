@@ -33,7 +33,7 @@
         "category": "ed-ge"
       },
       {
-        "command": "sceneTreeDataProvider.addScene",
+        "command": "addScene",
         "title": "Add Scene",
         "icon": {
           "light": "media/resources/light/plus.svg",
@@ -41,7 +41,7 @@
         }
       },
       {
-        "command": "sceneTreeDataProvider.editScene",
+        "command": "editScene",
         "title": "Edit Scene",
         "icon": {
           "light": "media/resources/light/edit.svg",
@@ -49,7 +49,7 @@
         }
       },
       {
-        "command": "sceneTreeDataProvider.deleteScene",
+        "command": "deleteScene",
         "title": "Delete Scene",
         "icon": {
           "light": "media/resources/light/trash-alt.svg",
@@ -57,7 +57,7 @@
         }
       },
       {
-        "command": "gameObjectTreeDataProvider.addGameObject",
+        "command": "addGameObject",
         "title": "Add Scene",
         "icon": {
           "light": "media/resources/light/plus.svg",
@@ -65,7 +65,7 @@
         }
       },
       {
-        "command": "gameObjectTreeDataProvider.editGameObject",
+        "command": "editGameObject",
         "title": "Edit Game Object",
         "icon": {
           "light": "media/resources/light/edit.svg",
@@ -73,7 +73,7 @@
         }
       },
       {
-        "command": "gameObjectTreeDataProvider.deleteGameObject",
+        "command": "deleteGameObject",
         "title": "Delete Game Object",
         "icon": {
           "light": "media/resources/light/trash-alt.svg",
@@ -81,7 +81,7 @@
         }
       },
       {
-        "command": "componentTreeDataProvider.addComponent",
+        "command": "addComponent",
         "title": "Add Component",
         "icon": {
           "light": "media/resources/light/plus.svg",
@@ -89,7 +89,7 @@
         }
       },
       {
-        "command": "componentTreeDataProvider.deleteComponent",
+        "command": "deleteComponent",
         "title": "Delete Component",
         "icon": {
           "light": "media/resources/light/trash-alt.svg",
@@ -97,7 +97,7 @@
         }
       },
       {
-        "command": "componentTreeDataProvider.editComponentValue",
+        "command": "editComponentValue",
         "title": "Edit Component",
         "icon": {
           "light": "media/resources/light/edit.svg",
@@ -105,12 +105,12 @@
         }
       },
       {
-        "command":"sceneTreeDataProvider.selectScene",
+        "command":"selectScene",
         "title":"Select Scene",
         "category":"ed-ge"
       },
       {
-        "command":"gameObjectTreeDataProvider.selectGameObject",
+        "command":"selectGameObject",
         "title":"Select GameObject",
         "category":"ed-ge"
       }
@@ -134,49 +134,49 @@
     "menus": {
       "view/title": [
         {
-          "command": "sceneTreeDataProvider.addScene",
+          "command": "addScene",
           "when": "view == sceneTreeDataProvider",
           "group": "navigation"
         },
         {
-          "command": "gameObjectTreeDataProvider.addGameObject",
+          "command": "addGameObject",
           "when": "view == gameObjectTreeDataProvider",
           "group": "navigation"
         },
         {
-          "command": "componentTreeDataProvider.addComponent",
+          "command": "addComponent",
           "when": "view == componentTreeDataProvider",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command":"sceneTreeDataProvider.editScene",
+          "command":"editScene",
           "when" : "view == sceneTreeDataProvider",
           "group":"inline"
         },
         {
-          "command":"sceneTreeDataProvider.deleteScene",
+          "command":"deleteScene",
           "when" : "view == sceneTreeDataProvider",
           "group":"inline"
         },
         {
-          "command":"gameObjectTreeDataProvider.editGameObject",
+          "command":"editGameObject",
           "when" : "view == gameObjectTreeDataProvider",
           "group":"inline"
         },
         {
-          "command":"gameObjectTreeDataProvider.deleteGameObject",
+          "command":"deleteGameObject",
           "when" : "view == gameObjectTreeDataProvider",
           "group":"inline"
         },
         {
-          "command":"componentTreeDataProvider.editComponentValue",
+          "command":"editComponentValue",
           "when" : "view == componentTreeDataProvider && viewItem == componentValue",
           "group":"inline"
         },
         {
-          "command":"componentTreeDataProvider.deleteComponent",
+          "command":"deleteComponent",
           "when" : "view == componentTreeDataProvider && viewItem == ADependency ",
           "group":"inline"
         }

@@ -18,51 +18,28 @@ export function activate(context: vscode.ExtensionContext) {
   EdGePanel.treeView = sceneTreeDataProvider;
 
   //Create the three treeDataProviders
-  vscode.window.createTreeView('sceneTreeDataProvider', {
-    treeDataProvider: sceneTreeDataProvider
-  });
+  vscode.window.createTreeView('sceneTreeDataProvider', {treeDataProvider: sceneTreeDataProvider});
 
-  vscode.window.createTreeView('gameObjectTreeDataProvider', {
-    treeDataProvider: gameObjectTreeDataProvider
-  });
+  vscode.window.createTreeView('gameObjectTreeDataProvider', {treeDataProvider: gameObjectTreeDataProvider});
 
-  vscode.window.createTreeView('componentTreeDataProvider', {
-    treeDataProvider: componentTreeDataProvider
-  });
+  vscode.window.createTreeView('componentTreeDataProvider', {treeDataProvider: componentTreeDataProvider});
 
   //Add the commands for the sceneTreeDataProvider
-  vscode.commands.registerCommand('sceneTreeDataProvider.refreshEntry', () =>
-    sceneTreeDataProvider.refresh()
-  );
+  vscode.commands.registerCommand('refreshEntry', () =>sceneTreeDataProvider.refresh());
 
-  vscode.commands.registerCommand("sceneTreeDataProvider.selectScene", (scene) =>
-    gameObjectTreeDataProvider.selectScene(scene)
-  );
+  vscode.commands.registerCommand("selectScene", (scene) =>gameObjectTreeDataProvider.selectScene(scene));
 
-  vscode.commands.registerCommand("sceneTreeDataProvider.editScene", (scene) =>
-    sceneTreeDataProvider.editScene(scene)
-  );
+  vscode.commands.registerCommand("editScene", (scene) =>sceneTreeDataProvider.editScene(scene));
 
   //Add the commands for the gameTreeDataProvider
-  vscode.commands.registerCommand("gameObjectTreeDataProvider.selectGameObject", (gameObject) =>
-    componentTreeDataProvider.selectGameObject(gameObject)
-  );
+  vscode.commands.registerCommand("selectGameObject", (gameObject) =>componentTreeDataProvider.selectGameObject(gameObject));
 
-  vscode.commands.registerCommand("gameObjectTreeDataProvider.editGameObject", (gameObject) => {
-    gameObjectTreeDataProvider.editGameObject(gameObject);
-  }
-  );
+  vscode.commands.registerCommand("editGameObject", (gameObject) =>gameObjectTreeDataProvider.editGameObject(gameObject));
 
   //Add the commansd for the componentTreeDataProvider
-  vscode.commands.registerCommand("componentTreeDataProvider.editComponentValue", (componentValue) => {
-    console.log(componentValue);
-    componentTreeDataProvider.editComponentValue(componentValue);
-  }
-  );
-  vscode.commands.registerCommand("componentTreeDataProvider.addComponent", () => {
-    componentTreeDataProvider.addComponent();
-  }
-  );
+  vscode.commands.registerCommand("editComponentValue", (componentValue) => componentTreeDataProvider.editComponentValue(componentValue));
+ 
+  vscode.commands.registerCommand("addComponent", () => componentTreeDataProvider.addComponent());
 
   context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
