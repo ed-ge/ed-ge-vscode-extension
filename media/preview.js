@@ -211,6 +211,17 @@ class Preview {
     this.scenes.push(scene);
     this.save();
   }
+  addGameObject(str) {
+    let data = JSON.parse(str);
+    let gameObject = this.scene.instantiate(Base.Prefabs.EmptyGameObject, new Base.Point(0,0), new Base.Point(0,0), 0, this.scene);
+    gameObject.name = data.name;
+    this.save();
+  }
+  deleteGameObject(str) {
+    let uuid = JSON.parse(str)
+    this.scene.children = this.scene.children.filter(i => i.uuid != uuid);
+    this.save();
+  }
   allScenes(str) {
     console.log("Got scenes");
 
@@ -238,9 +249,9 @@ class Preview {
       case 'editScene': return this.editScene(message.text)
       case 'deleteScene': return this.deleteScene(message.text);
 
-      case 'addGameObject': return;
-      case 'editGameObject': return;
-      case 'deleteGameObject': return;
+      case 'addGameObject': return this.addGameObject(message.text);
+      case 'editGameObject': return ;
+      case 'deleteGameObject': return this.deleteGameObject(message.text);
 
       case 'addComponent': return this.addComponent(message.text)
       case 'deleteComponent': return ;
