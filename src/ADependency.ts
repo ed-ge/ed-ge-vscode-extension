@@ -19,7 +19,7 @@ class ADependency extends Dependency {
         dark: path.join(__filename, '..', '..', 'media', 'resources', 'dark', 'dependency.svg')
       };
       this.command = {
-        command:"sceneTreeDataProvider.selectScene",
+        command:"selectScene",
         title:"Select Scene",
         arguments:[this],
       };
@@ -30,7 +30,7 @@ class ADependency extends Dependency {
         dark: path.join(__filename, '..', '..', 'media', 'resources', 'dark', 'boolean.svg')
       };
       this.command = {
-        command:"gameObjectTreeDataProvider.selectGameObject",
+        command:"selectGameObject",
         title:"Select Game Object",
         arguments:[this],
       };

@@ -5,31 +5,46 @@ import EdGePanel from './EdGePanel';
 
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
-  deleteScene(scene: any): any {
+  deleteScene(scene: any) {
     throw new Error("Method not implemented.");
   }
-  addScene(): any {
-    throw new Error("Method not implemented.");
+  async addScene() {
+    const result = await vscode.window.showInputBox({
+      value: "",
+      placeHolder: 'What is the name of the new scene?',
+
+    });
+    if (result) {
+      EdGePanel.getPanel().webview.postMessage(
+        {
+          command: 'addScene',
+          text: JSON.stringify({ name: result }),
+        }
+      );
+      this.refresh();
+    }
   }
   async editScene(scene: any) {
     const result = await vscode.window.showInputBox({
       value: scene.name,
       placeHolder: 'Edit the name of  scene ' + scene.nameable.name,
-      
+
     });
-    scene.nameable.name = result;
-    EdGePanel.getPanel().webview.postMessage(
-      {
-        command: 'editScene',
-        text: JSON.stringify({ name: result, uuid: scene.nameable.uuid }),
-      }
-    );
-    this.refresh();
+    if (result) {
+      scene.nameable.name = result;
+      EdGePanel.getPanel().webview.postMessage(
+        {
+          command: 'editScene',
+          text: JSON.stringify({ name: result, uuid: scene.nameable.uuid }),
+        }
+      );
+      this.refresh();
+    }
   }
 
   tree = new ADependency("root", "scene", {}, vscode.TreeItemCollapsibleState.Collapsed);
   info: any[] = [];
-  
+
 
   private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined> = new vscode.EventEmitter<Dependency | undefined>();
   readonly onDidChangeTreeData: vscode.Event<Dependency | undefined> = this._onDidChangeTreeData.event;

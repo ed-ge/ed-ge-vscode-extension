@@ -202,11 +202,12 @@ class Preview {
     this.save();
   }
   addScene(str) {
-    let scene = new Base.Scene({ name: str }, Base.prefabs, Base.components, this.behaviors);
-    scene.name = str;
+    let data = JSON.parse(str);
+    let scene = new Base.Scene({ name: data.name }, Base.prefabs, Base.components, this.behaviors);
+    scene.name = data.name;
     console.log("Created new scene" + "|" + str + "|")
     this.scenes.push(scene);
-    break;
+    this.save();
   }
   allScenes(str) {
     console.log("Got scenes");
@@ -245,7 +246,7 @@ class Preview {
 
       case 'selectScene': return this.selectScene(message.text)
       case 'selectGameObject': return this.selectGameObject(message.text);
-      
+
       default: return console.error("Unknown message " + message.command);
     }
   }
