@@ -158,7 +158,7 @@ class Preview {
   }
   selectScene(str) {
     this.scene = this.scenes.find(i => i.uuid == str)
-    Base.main(this.Prefabs, this.Behaviors, {allScenes:this.scenes}, {runUpdate:false, startScene: this.scene.name})
+    Base.main(this.Prefabs, this.behaviors, {allScenes:this.scenes}, {runUpdate:false, startScene: this.scene.name})
 
   }
   addComponent(str) {

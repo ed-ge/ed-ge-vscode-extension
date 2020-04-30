@@ -58,7 +58,7 @@
       },
       {
         "command": "addGameObject",
-        "title": "Add Scene",
+        "title": "Add Game Object",
         "icon": {
           "light": "media/resources/light/plus.svg",
           "dark": "media/resources/dark/plus.svg"

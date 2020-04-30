@@ -24,11 +24,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.window.createTreeView('componentTreeDataProvider', { treeDataProvider: componentTreeDataProvider });
 
-  //OK
   vscode.commands.registerCommand('addScene', () => sceneTreeDataProvider.addScene());
-  //OK
   vscode.commands.registerCommand("editScene", (scene) => sceneTreeDataProvider.editScene(scene));
-  //OK
   vscode.commands.registerCommand("deleteScene", (scene) => sceneTreeDataProvider.deleteScene(scene));
 
   vscode.commands.registerCommand("addGameObject", () => gameObjectTreeDataProvider.addGameObject());
