@@ -76,6 +76,7 @@ class Preview {
       sceneDef.name = scene.name;
       sceneDef.uuid = scene.uuid;
       sceneDef.objects = [];
+      sceneDef.children = [];
       for (let object of scene.children) {
         let def = {};
         def.name = object.name;
@@ -84,7 +85,9 @@ class Preview {
         def.rotation = object.rotation;
         def.type = "EmptyGameObject";
         sceneDef.objects.push(def);
+        sceneDef.children.push(def);
         def.components = [];
+        def.children = [];
         for (let component of object.components) {
           let cdef = ""
           cdef += component.constructor.name;
