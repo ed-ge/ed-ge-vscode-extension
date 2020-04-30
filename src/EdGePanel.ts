@@ -24,12 +24,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   vscode.window.createTreeView('componentTreeDataProvider', {treeDataProvider: componentTreeDataProvider});
 
-  //Add the commands for the sceneTreeDataProvider
+  //OK
   vscode.commands.registerCommand('addScene', () =>sceneTreeDataProvider.addScene());
+  //OK
   vscode.commands.registerCommand("editScene", (scene) =>sceneTreeDataProvider.editScene(scene));
+  //OK
   vscode.commands.registerCommand("deleteScene", (scene) =>sceneTreeDataProvider.deleteScene(scene));
-  // vscode.commands.registerCommand('refreshEntry', () =>sceneTreeDataProvider.refresh());
-
+  
   vscode.commands.registerCommand("addGameObject", () =>gameObjectTreeDataProvider.addGameObject());
   vscode.commands.registerCommand("editGameObject", (gameObject) =>gameObjectTreeDataProvider.editGameObject(gameObject));
   vscode.commands.registerCommand("deleteGameObject", (gameObject) =>gameObjectTreeDataProvider.deleteGameObject(gameObject));
