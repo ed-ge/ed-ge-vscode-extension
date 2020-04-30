@@ -5,6 +5,7 @@ import EdGePanel from './EdGePanel';
 
 
 export class SceneTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  
   async deleteScene(scene: any) {
     const result = await vscode.window.showQuickPick(['OK', 'Cancel'], {
       placeHolder: 'Do you want to delete the scene' + scene.name,

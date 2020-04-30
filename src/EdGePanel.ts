@@ -18,34 +18,37 @@ export function activate(context: vscode.ExtensionContext) {
   EdGePanel.treeView = sceneTreeDataProvider;
 
   //Create the three treeDataProviders
-  vscode.window.createTreeView('sceneTreeDataProvider', {treeDataProvider: sceneTreeDataProvider});
+  vscode.window.createTreeView('sceneTreeDataProvider', { treeDataProvider: sceneTreeDataProvider });
 
-  vscode.window.createTreeView('gameObjectTreeDataProvider', {treeDataProvider: gameObjectTreeDataProvider});
+  vscode.window.createTreeView('gameObjectTreeDataProvider', { treeDataProvider: gameObjectTreeDataProvider });
 
-  vscode.window.createTreeView('componentTreeDataProvider', {treeDataProvider: componentTreeDataProvider});
+  vscode.window.createTreeView('componentTreeDataProvider', { treeDataProvider: componentTreeDataProvider });
 
   //OK
-  vscode.commands.registerCommand('addScene', () =>sceneTreeDataProvider.addScene());
+  vscode.commands.registerCommand('addScene', () => sceneTreeDataProvider.addScene());
   //OK
-  vscode.commands.registerCommand("editScene", (scene) =>sceneTreeDataProvider.editScene(scene));
+  vscode.commands.registerCommand("editScene", (scene) => sceneTreeDataProvider.editScene(scene));
   //OK
-  vscode.commands.registerCommand("deleteScene", (scene) =>sceneTreeDataProvider.deleteScene(scene));
-  
-  vscode.commands.registerCommand("addGameObject", () =>gameObjectTreeDataProvider.addGameObject());
-  vscode.commands.registerCommand("editGameObject", (gameObject) =>gameObjectTreeDataProvider.editGameObject(gameObject));
-  vscode.commands.registerCommand("deleteGameObject", (gameObject) =>gameObjectTreeDataProvider.deleteGameObject(gameObject));
-  
+  vscode.commands.registerCommand("deleteScene", (scene) => sceneTreeDataProvider.deleteScene(scene));
+
+  vscode.commands.registerCommand("addGameObject", () => gameObjectTreeDataProvider.addGameObject());
+  vscode.commands.registerCommand("editGameObject", (gameObject) => gameObjectTreeDataProvider.editGameObject(gameObject));
+  vscode.commands.registerCommand("deleteGameObject", (gameObject) => gameObjectTreeDataProvider.deleteGameObject(gameObject));
+
   vscode.commands.registerCommand("addComponent", () => componentTreeDataProvider.addComponent());
   vscode.commands.registerCommand("deleteComponent", (component) => componentTreeDataProvider.deleteComponent(component));
   vscode.commands.registerCommand("editComponentValue", (componentValue) => componentTreeDataProvider.editComponentValue(componentValue));
-  
+
   //Add the commands for the gameTreeDataProvider
-  vscode.commands.registerCommand("selectScene", (scene) =>gameObjectTreeDataProvider.selectScene(scene));
-  vscode.commands.registerCommand("selectGameObject", (gameObject) =>componentTreeDataProvider.selectGameObject(gameObject));
+  vscode.commands.registerCommand("selectScene", (scene) => {
+    gameObjectTreeDataProvider.selectScene(scene);
+    componentTreeDataProvider.selectScene(scene);
+  });
+  vscode.commands.registerCommand("selectGameObject", (gameObject) => componentTreeDataProvider.selectGameObject(gameObject));
 
 
   //Add the commansd for the componentTreeDataProvider
- 
+
 
   context.subscriptions.push(
     vscode.commands.registerCommand('ed-ge.start', () => {
@@ -75,7 +78,10 @@ class EdGePanel {
    * @param gameObject The gameObject to select
    */
   static selectGameObject(gameObject: any) {
-    EdGePanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
+    if (!gameObject)
+      EdGePanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: 0 });
+    else
+      EdGePanel.getPanel().webview.postMessage({ command: 'selectGameObject', text: gameObject.nameable.uuid });
     EdGePanel.gameObject = gameObject;
   }
 
@@ -219,8 +225,8 @@ class EdGePanel {
               let gameBehaviors = info.gameBehaviors;
               let scenes = info.scenes;
 
-              let file= 
-`import GameBehaviors from './GameBehaviors.js'
+              let file =
+                `import GameBehaviors from './GameBehaviors.js'
 let GameObjects = ${JSON.stringify(gameObjects, null, 2)}
 let Scenes = ${JSON.stringify(scenes, null, 2)}
  

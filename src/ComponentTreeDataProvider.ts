@@ -5,6 +5,12 @@ import ADependency from './ADependency';
 import EdGePanel from "./EdGePanel.js"
 
 export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Dependency> {
+  
+  selectScene(scene: any) {
+    EdGePanel.selectGameObject(null);
+    this.selectGameObject(null);
+    this.refresh();
+  }
   deleteComponent(component: any): any {
     throw new Error("Method not implemented.");
   }
@@ -57,7 +63,7 @@ export class ComponentTreeDataProvider implements vscode.TreeDataProvider<Depend
     
     EdGePanel.selectGameObject(gameObject);
     
-    this._onDidChangeTreeData.fire();
+    this.refresh();
   }
 
   getTreeItem(element: Dependency): vscode.TreeItem {

@@ -56,6 +56,7 @@ export class GameObjectTreeDataProvider implements vscode.TreeDataProvider<Depen
   }
 
   selectScene(scene: any) {
+    if(this.scene == scene) return;
     this.scene = scene;
     EdGePanel.getPanel().webview.postMessage({ command: 'selectScene', text: scene.nameable.uuid });
     this._onDidChangeTreeData.fire();
