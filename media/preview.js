@@ -128,11 +128,12 @@ class Preview {
    */
   loadModule(module) {
     //this.scenes = module.Scenes.allScenes;
-    Base.main(module.GameObjects, module.GameBehaviors, module.Scenes, false);
+    Base.main(module.GameObjects, module.GameBehaviors, module.Scenes, {runUpdate:false});
 
     //Etract the values we need after we load the game
-    this.scenes = Base.SceneManager.scenes;
+    this.prefabs = Base.SceneManager.Prefabs;
     this.behaviors = module.GameBehaviors;
+    this.scenes = Base.SceneManager.scenes;
     this.startScene = module.Scenes.startScene;
 
     //Update the server with the scenes
@@ -157,6 +158,7 @@ class Preview {
   }
   selectScene(str) {
     this.scene = this.scenes.find(i => i.uuid == str)
+    Base.main(this.Prefabs, this.Behaviors, {allScenes:this.scenes}, {runUpdate:false, startScene: this.scene.name})
 
   }
   addComponent(str) {
