@@ -63,31 +63,22 @@ class Preview {
    * Generate the text for all the scenes in our DSL
    */
   serializeScenes() {
-    let toReturn = {};
-    let allScenes = [];
-    toReturn.allScenes = allScenes;
+    let toReturn = {startScene:"", allScenes:[]};
+    
 
-    console.log(JSON.stringify(this.scenes.map(i => i.name + ".")))
     toReturn.startScene = this.startScene;
 
     for (let scene of this.scenes) {
-      console.log(scene.name)
       let sceneDef = {};
       sceneDef.name = scene.name;
       sceneDef.uuid = scene.uuid;
       sceneDef.objects = [];
-      sceneDef.children = [];
       for (let object of scene.children) {
-        let def = {};
-        def.name = object.name;
-        def.location = object.location;
-        def.scale = { x: object.scaleX, y: object.scaleY };
-        def.rotation = object.rotation;
-        def.type = "EmptyGameObject";
-        sceneDef.objects.push(def);
-        sceneDef.children.push(def);
-        def.components = [];
-        def.children = [];
+        let child = {};
+        child.def= `${object.name}, ${object.x}, ${object.y}, ${object.scaleX}, ${object.scaleY}, ${object.rotation}, ${object.prefabName}`;
+        
+        child.components = [];
+        child.children = [];
         for (let component of object.components) {
           let cdef = ""
           cdef += component.constructor.name;
@@ -99,8 +90,9 @@ class Preview {
             cdef += component[key];
             cdef += "|";
           }
-          def.components.push(cdef);
+          child.components.push(cdef);
         }
+        sceneDef.objects.push(child);
       }
       toReturn.allScenes.push(sceneDef)
     }
@@ -117,6 +109,7 @@ class Preview {
     let gameBehaviors = this.serializeBehaviors();
     console.log(gameBehaviors);
     let scenes = this.serializeScenes();
+    console.log(scenes);
     this.vscode.postMessage({
       command: 'createFile',
       text: JSON.stringify({ gameObjects, gameBehaviors, scenes })
@@ -159,6 +152,12 @@ class Preview {
   selectScene(str) {
     this.scene = this.scenes.find(i => i.uuid == str)
     Base.main(this.Prefabs, this.behaviors, {allScenes:this.scenes}, {runUpdate:false, startScene: this.scene.name})
+    //Update the server with the scenes
+    this.scenes = Base.SceneManager.scenes;
+    this.vscode.postMessage({
+      command: "object",
+      text: JSON.stringify(this.scenes, (name, value) => name == "gameObject" ? undefined : value)
+    });
 
   }
   addComponent(str) {
@@ -218,7 +217,7 @@ class Preview {
   }
   addGameObject(str) {
     let data = JSON.parse(str);
-    let gameObject = this.scene.instantiate(Base.Prefabs.EmptyGameObject, new Base.Point(0,0), new Base.Point(0,0), 0, this.scene);
+    let gameObject = this.scene.instantiate(Base.Prefabs.EmptyGameObject, new Base.Point(0,0), new Base.Point(1,1), 0, this.scene);
     gameObject.name = data.name;
     this.save();
   }
