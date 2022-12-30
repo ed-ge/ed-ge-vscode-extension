@@ -200,7 +200,7 @@
     "@types/glob": "^7.1.1",
     "@types/mocha": "^7.0.1",
     "@types/ncp": "^2.0.3",
-    "mocha": "^7.0.1",
+    "mocha": "^10.2.0",
     "ncp": "^2.0.0"
   },
   "devDependencies": {
